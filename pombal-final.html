@@ -141,8 +141,7 @@ nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid
 .chatmsgs::-webkit-scrollbar{display:none}
 /* chips + input fixed at bottom */
 .chatbot{flex-shrink:0}
-.chips{padding:6px 12px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
+.chips{padding:6px 12px;display:flex;flex-wrap:wrap;gap:6px;}
 .chip{background:var(--card);border:1px solid var(--brd);color:var(--t2);border-radius:20px;padding:6px 14px;font-size:11px;white-space:nowrap;cursor:pointer;flex-shrink:0;transition:all .15s}
 .chip:hover,.chip:active{background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.35);color:var(--gold)}
 .cin{background:rgba(9,9,15,.98);border-top:1px solid var(--brd);padding:8px 12px;display:flex;gap:8px;align-items:flex-end;padding-bottom:max(8px,env(safe-area-inset-bottom))}
