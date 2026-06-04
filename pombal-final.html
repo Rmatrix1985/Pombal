@@ -527,26 +527,49 @@ const POMBAL={
     periodos:"Manhã<13h · Tarde 13h-20:30h · Noite>20:30h",
     whatsapp:"Callmebot · 351917157161 · apikey 8022833"
   },
-  produtos:[
-    {
-      nome:"HexaPlus",
-      categoria:"Tricomoníase / Desinfeção da água",
-      descricao:"Utilizado no controlo da tricomoníase. Ajuda a desinfetar a água de bebida. Administração na água de bebida.",
-      dose:"10 ml por litro de água durante 2 dias consecutivos."
-    },
-    {
-      nome:"Vitamino L (Zoopan)",
-      categoria:"Suplemento Vitamínico",
-      descricao:"Vitaminas, aminoácidos e L-Carnitina. Apoia recuperação após concursos. Ajuda no crescimento dos borrachos. Útil na criação e muda. Melhora a vitalidade e o desempenho.",
-      dose:"2 ml por litro de água."
-    },
-    {
-      nome:"Avidress Plus",
-      categoria:"Saúde Intestinal / Acidificante da Água",
-      descricao:"Melhora a qualidade da água de bebida. Apoia a flora intestinal. Ajuda a reduzir o risco de infeções. Pode ser utilizado regularmente.",
-      dose:"5 ml por litro de água."
-    }
-  ]
+  produtos:{
+    agua:[
+      {nome:"HexaPlus",cat:"Tricomoníase / Desinfeção",desc:"Controlo da tricomoníase e desinfeção da água.",dose:"10ml/L durante 2 dias"},
+      {nome:"Vitamino L (Zoopan)",cat:"Vitamínico",desc:"Vitaminas, recuperação e crescimento dos borrachos.",dose:"2ml/L"},
+      {nome:"Protovit",cat:"Vitamínico",desc:"Vitaminas.",dose:"Seguir indicação"},
+      {nome:"Eletrólitos",cat:"Recuperação",desc:"Recuperação pós-esforço.",dose:"Seguir indicação"},
+      {nome:"Rovamycine",cat:"Respiratório",desc:"Vias respiratórias.",dose:"Seguir indicação"},
+      {nome:"Oxigénio Plus",cat:"Respiratório / Tricomonas",desc:"Respiratório e tricomonas.",dose:"Seguir indicação"},
+      {nome:"Broncolis",cat:"Broncodilatador",desc:"Broncodilatador.",dose:"Seguir indicação"},
+      {nome:"Mel de Eucalipto",cat:"Catarros / Respiratório",desc:"Catarros e vias respiratórias.",dose:"Seguir indicação"},
+      {nome:"Magnésio + B6",cat:"Muscular",desc:"Recuperação muscular.",dose:"Seguir indicação"},
+      {nome:"Água Limpa",cat:"Qualidade da água",desc:"Melhora a qualidade da água.",dose:"Seguir indicação"},
+      {nome:"Optiresp",cat:"Respiratório",desc:"Respiratório.",dose:"Seguir indicação"},
+      {nome:"Glicose",cat:"Energia",desc:"Energia rápida.",dose:"Seguir indicação"},
+      {nome:"Chá + Pó Alcalino",cat:"Alcalinizante",desc:"Chá de ervas e alcalinização.",dose:"Seguir indicação"},
+      {nome:"Herbolan Verselle Laga",cat:"Chá de ervas",desc:"Chá de ervas.",dose:"Seguir indicação"}
+    ],
+    racao:[
+      {nome:"Bio Sac Crómio",cat:"Probiótico",desc:"Probiótico e flora intestinal.",dose:"Na ração"},
+      {nome:"Levedura de Cerveja",cat:"Vitamínico / Digestão",desc:"Vitaminas B, digestão e muda.",dose:"Na ração"},
+      {nome:"L-Carnitine Forte",cat:"Energia",desc:"Energia.",dose:"Na ração"},
+      {nome:"Energy Activator",cat:"Energético",desc:"Mistura energética.",dose:"Na ração"},
+      {nome:"Optidigest",cat:"Digestão",desc:"Digestão e óleos essenciais.",dose:"Na ração"},
+      {nome:"Klaus Aminoprime",cat:"Aminoácidos",desc:"Aminoácidos e cálcio.",dose:"Na ração"}
+    ],
+    tratamentos:[
+      {nome:"Flagyl",cat:"Tricomonas",desc:"Tricomonas.",dose:"Seguir indicação"},
+      {nome:"Antibiótico Genellari",cat:"Tricomonas / Salmonelas",desc:"Tricomonas e salmonelas.",dose:"Seguir indicação"},
+      {nome:"Bactrim",cat:"Bactérias",desc:"Bactérias.",dose:"Seguir indicação"},
+      {nome:"Baytril",cat:"Bactérias / Respiratório",desc:"Bactérias e respiratório.",dose:"Seguir indicação"},
+      {nome:"Salmacoli Zoopan",cat:"Salmonelas",desc:"Salmonelas.",dose:"Seguir indicação"}
+    ]
+  },
+  esquema_semanal:{
+    "Segunda":"Chá + Pó Alcalino",
+    "Terça":"Klaus Aminoprime",
+    "Quarta":"Flagyl",
+    "Quinta":"Rovamycine / Optiresp",
+    "Sexta":"Energy Activator",
+    "Sábado":"Energy Activator",
+    "Domingo":"Água Limpa",
+    apoio:["Becozyme","Glicose","L-Carnitine Forte","Backs"]
+  }
 };
 const hist=[];let busy=false;
 async function getTempoAtual(){
@@ -611,11 +634,31 @@ async function sendMsg(txt){
   else if(q.includes('composição')) r='Milho Miúdo, Sorgo Vermelho, Sorgo Branco, Ervilhaca, Ervilha Verde, Ervilha Amarela, Ervilha Castanha, Cártamo e Trigo.';
   else if(q.includes('resumo')) r='Resumo: 23 entradas hoje, 8 visitas à alimentação e sistema operacional.';
   else if(q.includes('tempo') || q.includes('meteorologia') || q.includes('previs')) r='Abre o separador Tempo para veres a previsão OpenWeather em tempo real para Paços de Ferreira.';
-  else if(q.includes('tricomon') || q.includes('hexaplus')) r='✅ HexaPlus — Controlo da tricomoníase e desinfeção da água.\nDose: 10 ml por litro de água durante 2 dias consecutivos.';
-  else if(q.includes('vitamina') || q.includes('vitamino') || q.includes('zoopan') || q.includes('carnitina') || q.includes('borrach')) r='✅ Vitamino L (Zoopan) — Suplemento com vitaminas, aminoácidos e L-Carnitina.\nApoia recuperação, crescimento dos borrachos e vitalidade.\nDose: 2 ml por litro de água.';
-  else if(q.includes('intestin') || q.includes('avidress') || q.includes('acidific') || q.includes('flora') || q.includes('infeç')) r='✅ Avidress Plus — Acidificante da água que apoia a flora intestinal e reduz risco de infeções.\nDose: 5 ml por litro de água.';
-  else if(q.includes('produto') || q.includes('medicament') || q.includes('tratament') || q.includes('tenho algo') || q.includes('tenho alguma')) r='📦 Produtos disponíveis:\n• HexaPlus — Tricomoníase (10ml/L, 2 dias)\n• Vitamino L (Zoopan) — Vitamínico (2ml/L)\n• Avidress Plus — Saúde intestinal (5ml/L)';
-  else r='Sou o assistente do Pombal IA. Podes perguntar sobre ração, entradas, alimentação, produtos, tempo e mais.';
+  // ÁGUA DE BEBIDA
+  else if(q.includes('hexaplus') || (q.includes('tricomon') && !q.includes('flagyl') && !q.includes('genellar'))) r='✅ HexaPlus — Tricomoníase e desinfeção da água.\nDose: 10ml/L durante 2 dias.';
+  else if(q.includes('vitamino') || q.includes('zoopan') || q.includes('protovit')) r='✅ Vitamino L (Zoopan) / Protovit — Vitaminas e recuperação.\nDose: 2ml/L (Vitamino L).';
+  else if(q.includes('eletról') || q.includes('electrol')) r='✅ Eletrólitos — Recuperação pós-esforço.';
+  else if(q.includes('rovamycin') || q.includes('optiresp') || q.includes('broncolis') || q.includes('oxigén') || q.includes('respirat')) r='✅ Respiratório:\n• Rovamycine — vias respiratórias (Quinta)\n• Optiresp — respiratório\n• Broncolis — broncodilatador\n• Oxigénio Plus — respiratório e tricomonas';
+  else if(q.includes('eucalipto') || q.includes('catarro')) r='✅ Mel de Eucalipto — Catarros e vias respiratórias.';
+  else if(q.includes('magnés') || q.includes('muscul')) r='✅ Magnésio + B6 — Recuperação muscular.';
+  else if(q.includes('glicose') || q.includes('energia rápid')) r='✅ Glicose — Energia rápida.';
+  else if(q.includes('herbolan') || q.includes('chá') || q.includes('alcalin')) r='✅ Chá + Pó Alcalino (Segunda) / Herbolan Verselle Laga — Chá de ervas e alcalinização.';
+  // RAÇÃO
+  else if(q.includes('bio sac') || q.includes('crómio') || q.includes('probiótic')) r='✅ Bio Sac Crómio — Probiótico e flora intestinal. (na ração)';
+  else if(q.includes('levedura') || q.includes('cerveja')) r='✅ Levedura de Cerveja — Vitaminas B, digestão e muda. (na ração)';
+  else if(q.includes('carnitin') || q.includes('l-carnitin')) r='✅ L-Carnitine Forte — Energia. (na ração)';
+  else if(q.includes('energy activat')) r='✅ Energy Activator — Mistura energética. (Sexta e Sábado)';
+  else if(q.includes('optidigest') || q.includes('digest')) r='✅ Optidigest — Digestão e óleos essenciais. (na ração)';
+  else if(q.includes('aminoprime') || q.includes('aminoácid') || q.includes('cálcio')) r='✅ Klaus Aminoprime — Aminoácidos e cálcio. (Terça, na ração)';
+  // TRATAMENTOS
+  else if(q.includes('flagyl')) r='✅ Flagyl — Tricomonas. (Quarta-feira no esquema semanal)';
+  else if(q.includes('genellar') || q.includes('salmacoli') || q.includes('salmonel')) r='✅ Antibiótico Genellari — Tricomonas e salmonelas.\n✅ Salmacoli Zoopan — Salmonelas.';
+  else if(q.includes('bactrim') || q.includes('baytril') || q.includes('bactér')) r='✅ Bactrim — Bactérias.\n✅ Baytril — Bactérias e respiratório.';
+  // ESQUEMA SEMANAL
+  else if(q.includes('esquema') || q.includes('semana') || q.includes('segunda') || q.includes('terça') || q.includes('quarta') || q.includes('quinta') || q.includes('sexta') || q.includes('sábado') || q.includes('domingo')) r='📅 Esquema Semanal de Concursos:\n• Segunda: Chá + Pó Alcalino\n• Terça: Klaus Aminoprime\n• Quarta: Flagyl\n• Quinta: Rovamycine / Optiresp\n• Sexta: Energy Activator\n• Sábado: Energy Activator\n• Domingo: Água Limpa\n\nApoio: Becozyme, Glicose, L-Carnitine Forte, Backs';
+  // PRODUTOS GERAL
+  else if(q.includes('produto') || q.includes('medicament') || q.includes('tratament') || q.includes('tenho algo') || q.includes('tenho alguma') || q.includes('o que tens')) r='📦 Tenho:\nÁGUA: HexaPlus, Vitamino L, Protovit, Eletrólitos, Rovamycine, Oxigénio Plus, Broncolis, Mel Eucalipto, Magnésio+B6, Optiresp, Glicose, Chá Alcalino, Herbolan\nRAÇÃO: Bio Sac Crómio, Levedura Cerveja, L-Carnitine, Energy Activator, Optidigest, Klaus Aminoprime\nTRATAMENTOS: Flagyl, Genellari, Bactrim, Baytril, Salmacoli\n\nPergunta sobre qualquer um!';
+  else r='Sou o assistente do Pombal IA. Podes perguntar sobre ração, entradas, alimentação, produtos, esquema semanal, tempo e mais.';
 
   t.remove();
   addmsg('a', r);
