@@ -3,22 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Pombal IA</title>
-<meta name="application-name" content="Pombal IA">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Pombal IA">
-<meta name="theme-color" content="#09090F">
-<link rel="manifest" href="data:application/json,{
-  %22name%22:%22Pombal+IA%22,
-  %22short_name%22:%22Pombal+IA%22,
-  %22start_url%22:%22.%22,
-  %22display%22:%22standalone%22,
-  %22background_color%22:%22%2309090F%22,
-  %22theme_color%22:%22%2309090F%22,
-  %22orientation%22:%22portrait%22
-}">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='115' fill='%2309090F'/><circle cx='256' cy='256' r='230' fill='none' stroke='%23D4A843' stroke-width='8' opacity='0.4'/><text y='0.9em' font-size='280' text-anchor='middle' x='256' dominant-baseline='middle'>🕊️</text><text y='420' font-size='72' font-family='serif' font-weight='900' fill='%23D4A843' text-anchor='middle' x='256'>POMBAL IA</text></svg>">
+<title>Pombal IA V12 Online</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900&family=Dancing+Script:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -222,38 +207,7 @@ textarea::placeholder{color:var(--t3)}
       </div>
     </div>
     <div class="hbot">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
-      <svg width="52" height="52" viewBox="0 0 100 100" style="flex-shrink:0;filter:drop-shadow(0 4px 15px rgba(212,168,67,0.5))">
-        <defs>
-          <linearGradient id="goldg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#F5C842"/>
-            <stop offset="50%" style="stop-color:#D4A843"/>
-            <stop offset="100%" style="stop-color:#9A6010"/>
-          </linearGradient>
-        </defs>
-        <!-- Corpo da pomba -->
-        <ellipse cx="52" cy="50" rx="22" ry="14" fill="url(#goldg)"/>
-        <!-- Cabeça -->
-        <circle cx="72" cy="42" r="10" fill="url(#goldg)"/>
-        <!-- Bico -->
-        <polygon points="82,40 90,43 82,46" fill="#F5C842"/>
-        <!-- Olho -->
-        <circle cx="75" cy="40" r="2" fill="#09090F"/>
-        <!-- Asa grande superior -->
-        <path d="M45,48 Q30,25 10,20 Q25,35 40,45 Z" fill="url(#goldg)" opacity="0.95"/>
-        <!-- Asa detalhe -->
-        <path d="M45,50 Q28,32 8,28 Q22,40 42,50 Z" fill="#F5C842" opacity="0.7"/>
-        <!-- Asa inferior -->
-        <path d="M48,54 Q35,65 15,70 Q28,58 46,54 Z" fill="url(#goldg)" opacity="0.85"/>
-        <!-- Cauda -->
-        <path d="M32,52 Q15,55 8,65 Q18,58 34,54 Z" fill="url(#goldg)"/>
-        <!-- Pombal pequeno em baixo -->
-        <rect x="30" y="82" width="40" height="12" rx="2" fill="url(#goldg)" opacity="0.6"/>
-        <polygon points="30,82 50,72 70,82" fill="url(#goldg)" opacity="0.5"/>
-        <rect x="40" y="76" width="6" height="6" fill="#09090F" opacity="0.4"/>
-      </svg>
       <div class="htitle">Pombal IA</div>
-    </div>
       <div class="hscript">Ricardo Ferneina 🕊️</div>
       <div class="htagline">O teu assistente inteligente para<br>um pombal campeão.</div>
     </div>
@@ -491,8 +445,11 @@ textarea::placeholder{color:var(--t3)}
       <div class="chip" onclick="csend(this)">Validade da ração</div>
       <div class="chip" onclick="csend(this)">Composição da ração</div>
       <div class="chip" onclick="csend(this)">Zona alimentação</div>
-      <div class="chip" onclick="csend(this)">Como funciona?</div>
       <div class="chip" onclick="csend(this)">Resumo do dia</div>
+      <div class="chip" onclick="csend(this)">Que produtos tenho?</div>
+      <div class="chip" onclick="csend(this)">Tenho algo para tricomonas?</div>
+      <div class="chip" onclick="csend(this)">Que vitaminas tenho?</div>
+      <div class="chip" onclick="csend(this)">Tenho algo para saúde intestinal?</div>
     </div>
     <div class="cin">
       <div class="cinw">
@@ -563,7 +520,27 @@ const POMBAL={
     colunas:"POMBO,DATA,HORA,Diferença,Período,Total,PRIMEIRO,ÚLTIMO,DIF TOTAL",
     periodos:"Manhã<13h · Tarde 13h-20:30h · Noite>20:30h",
     whatsapp:"Callmebot · 351917157161 · apikey 8022833"
-  }
+  },
+  produtos:[
+    {
+      nome:"HexaPlus",
+      categoria:"Tricomoníase / Desinfeção da água",
+      descricao:"Utilizado no controlo da tricomoníase. Ajuda a desinfetar a água de bebida. Administração na água de bebida.",
+      dose:"10 ml por litro de água durante 2 dias consecutivos."
+    },
+    {
+      nome:"Vitamino L (Zoopan)",
+      categoria:"Suplemento Vitamínico",
+      descricao:"Vitaminas, aminoácidos e L-Carnitina. Apoia recuperação após concursos. Ajuda no crescimento dos borrachos. Útil na criação e muda. Melhora a vitalidade e o desempenho.",
+      dose:"2 ml por litro de água."
+    },
+    {
+      nome:"Avidress Plus",
+      categoria:"Saúde Intestinal / Acidificante da Água",
+      descricao:"Melhora a qualidade da água de bebida. Apoia a flora intestinal. Ajuda a reduzir o risco de infeções. Pode ser utilizado regularmente.",
+      dose:"5 ml por litro de água."
+    }
+  ]
 };
 const hist=[];let busy=false;
 async function getTempoAtual(){
@@ -628,7 +605,11 @@ async function sendMsg(txt){
   else if(q.includes('composição')) r='Milho Miúdo, Sorgo Vermelho, Sorgo Branco, Ervilhaca, Ervilha Verde, Ervilha Amarela, Ervilha Castanha, Cártamo e Trigo.';
   else if(q.includes('resumo')) r='Resumo: 23 entradas hoje, 8 visitas à alimentação e sistema operacional.';
   else if(q.includes('tempo') || q.includes('meteorologia') || q.includes('previs')) r='Abre o separador Tempo para veres a previsão OpenWeather em tempo real para Paços de Ferreira.';
-  else r='Sou a versão Offline do Pombal IA. Também posso responder sobre tempo, previsões, alimentação, entradas e ração.';
+  else if(q.includes('tricomon') || q.includes('hexaplus')) r='✅ HexaPlus — Controlo da tricomoníase e desinfeção da água.\nDose: 10 ml por litro de água durante 2 dias consecutivos.';
+  else if(q.includes('vitamina') || q.includes('vitamino') || q.includes('zoopan') || q.includes('carnitina') || q.includes('borrach')) r='✅ Vitamino L (Zoopan) — Suplemento com vitaminas, aminoácidos e L-Carnitina.\nApoia recuperação, crescimento dos borrachos e vitalidade.\nDose: 2 ml por litro de água.';
+  else if(q.includes('intestin') || q.includes('avidress') || q.includes('acidific') || q.includes('flora') || q.includes('infeç')) r='✅ Avidress Plus — Acidificante da água que apoia a flora intestinal e reduz risco de infeções.\nDose: 5 ml por litro de água.';
+  else if(q.includes('produto') || q.includes('medicament') || q.includes('tratament') || q.includes('tenho algo') || q.includes('tenho alguma')) r='📦 Produtos disponíveis:\n• HexaPlus — Tricomoníase (10ml/L, 2 dias)\n• Vitamino L (Zoopan) — Vitamínico (2ml/L)\n• Avidress Plus — Saúde intestinal (5ml/L)';
+  else r='Sou o assistente do Pombal IA. Podes perguntar sobre ração, entradas, alimentação, produtos, tempo e mais.';
 
   t.remove();
   addmsg('a', r);
