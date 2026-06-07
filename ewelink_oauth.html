@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iaPombal — Token eWeLink</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --gold:#D4A843;--bg:#09090F;--card:#0F1019;
+    --brd:rgba(255,255,255,0.08);--t1:#F0EDE8;--t2:#888590;
+    --green:#3DC97A;--red:#E05555;
+  }
+  body{
+    background:var(--bg);color:var(--t1);
+    font-family:'DM Mono',monospace;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .container{
+    width:100%;max-width:520px;
+    background:var(--card);border:1px solid var(--brd);
+    border-radius:16px;padding:32px;
+  }
+  .logo{
+    font-family:'Playfair Display',serif;
+    color:var(--gold);font-size:22px;
+    margin-bottom:6px;display:flex;align-items:center;gap:10px;
+  }
+  .subtitle{color:var(--t2);font-size:12px;margin-bottom:28px}
+  
+  .step{
+    background:rgba(255,255,255,0.03);border:1px solid var(--brd);
+    border-radius:10px;padding:20px;margin-bottom:16px;
+  }
+  .step-num{
+    color:var(--gold);font-size:11px;font-weight:500;
+    letter-spacing:2px;margin-bottom:8px;
+  }
+  .step h3{font-size:14px;margin-bottom:10px;color:var(--t1)}
+  .step p{font-size:12px;color:var(--t2);line-height:1.6}
+
+  .btn{
+    display:block;width:100%;padding:14px;
+    background:var(--gold);color:#09090F;
+    border:none;border-radius:8px;
+    font-family:'DM Mono',monospace;font-size:13px;font-weight:500;
+    cursor:pointer;text-align:center;text-decoration:none;
+    transition:opacity .2s;margin-bottom:12px;
+  }
+  .btn:hover{opacity:.85}
+  .btn.secondary{
+    background:transparent;color:var(--gold);
+    border:1px solid var(--gold);
+  }
+
+  .input-group{margin-bottom:12px}
+  label{font-size:11px;color:var(--t2);display:block;margin-bottom:6px;letter-spacing:1px}
+  input{
+    width:100%;padding:10px 12px;
+    background:rgba(255,255,255,0.05);border:1px solid var(--brd);
+    border-radius:6px;color:var(--t1);font-family:'DM Mono',monospace;font-size:12px;
+    outline:none;transition:border .2s;
+  }
+  input:focus{border-color:var(--gold)}
+
+  .token-box{
+    background:rgba(212,168,67,0.08);border:1px solid rgba(212,168,67,0.3);
+    border-radius:8px;padding:16px;margin-top:16px;display:none;
+  }
+  .token-box.show{display:block}
+  .token-label{font-size:10px;color:var(--gold);letter-spacing:2px;margin-bottom:8px}
+  .token-value{
+    font-size:11px;color:var(--t1);word-break:break-all;
+    background:rgba(0,0,0,0.3);padding:10px;border-radius:6px;
+    margin-bottom:10px;line-height:1.6;
+  }
+  .copy-btn{
+    background:var(--gold);color:#09090F;border:none;
+    padding:8px 16px;border-radius:6px;font-size:12px;
+    font-family:'DM Mono',monospace;cursor:pointer;
+    transition:opacity .2s;
+  }
+  .copy-btn:hover{opacity:.85}
+
+  .status{
+    font-size:12px;padding:10px 14px;border-radius:6px;
+    margin-top:12px;display:none;
+  }
+  .status.show{display:block}
+  .status.ok{background:rgba(61,201,122,0.1);color:var(--green);border:1px solid rgba(61,201,122,0.2)}
+  .status.err{background:rgba(224,85,85,0.1);color:var(--red);border:1px solid rgba(224,85,85,0.2)}
+  .status.loading{background:rgba(212,168,67,0.1);color:var(--gold);border:1px solid rgba(212,168,67,0.2)}
+
+  .divider{
+    text-align:center;color:var(--t2);font-size:11px;
+    margin:16px 0;letter-spacing:2px;
+  }
+
+  .gas-code{
+    background:rgba(0,0,0,0.4);border:1px solid var(--brd);
+    border-radius:8px;padding:16px;margin-top:12px;
+  }
+  .gas-code pre{
+    font-size:10px;color:var(--t2);line-height:1.8;
+    white-space:pre-wrap;word-break:break-all;
+  }
+  .gas-code .highlight{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">🕊️ iaPombal</div>
+  <div class="subtitle">Obter Token de Acesso eWeLink</div>
+
+  <!-- MÉTODO 1: OAuth via browser -->
+  <div class="step">
+    <div class="step-num">MÉTODO 1 — OAUTH (RECOMENDADO)</div>
+    <h3>Autorizar via eWeLink</h3>
+    <p>Clica no botão abaixo para fazeres login na eWeLink e autorizar o iaPombal. Serás redirecionado de volta com o token.</p>
+    <br>
+    <button class="btn" onclick="iniciarOAuth()">🔐 Login com eWeLink</button>
+  </div>
+
+  <div class="divider">— OU —</div>
+
+  <!-- MÉTODO 2: Login direto -->
+  <div class="step">
+    <div class="step-num">MÉTODO 2 — LOGIN DIRETO</div>
+    <h3>Email + Password</h3>
+    <div class="input-group">
+      <label>EMAIL</label>
+      <input type="email" id="email" value="ricardo.mferreira.5@gmail.com">
+    </div>
+    <div class="input-group">
+      <label>PASSWORD</label>
+      <input type="password" id="password" placeholder="A tua password eWeLink">
+    </div>
+    <button class="btn secondary" onclick="loginDireto()">Obter Token</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <!-- Token obtido -->
+  <div class="token-box" id="tokenBox">
+    <div class="token-label">✅ TOKEN OBTIDO</div>
+    <div class="token-value" id="tokenValue"></div>
+    <button class="copy-btn" onclick="copiarToken()">📋 Copiar Token</button>
+    <br><br>
+    <div class="token-label">CÓDIGO PARA GOOGLE APPS SCRIPT</div>
+    <div class="gas-code">
+      <pre id="gasCode"></pre>
+    </div>
+    <button class="copy-btn" onclick="copiarCodigo()" style="margin-top:10px">📋 Copiar Código GAS</button>
+  </div>
+</div>
+
+<script>
+var APP_ID     = "yy44tACRqfGv7EdNd6wPE9XaIQwBjUGK";
+var APP_SECRET = "AejV94ziAooFYnoxedn2LqHVolav5QcE";
+var REDIRECT   = "https://rmatrix1985.github.io/Pombal/ewelink_oauth.html";
+
+function mostrarStatus(msg, tipo) {
+  var el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status show ' + tipo;
+}
+
+function iniciarOAuth() {
+  var seq   = Math.random().toString(36).substring(2, 10);
+  var state = btoa(JSON.stringify({seq: seq, ts: Date.now()}));
+  var url   = "https://c2ccdn.coolkit.cc/oauth/index.html"
+    + "?clientId=" + APP_ID
+    + "&seq=" + seq
+    + "&authorization=" + btoa(APP_ID + "_" + Math.floor(Date.now()/1000))
+    + "&redirectUrl=" + encodeURIComponent(REDIRECT)
+    + "&nonce=" + seq
+    + "&grantType=authorization_code"
+    + "&state=" + encodeURIComponent(state);
+  window.location.href = url;
+}
+
+// Verificar se voltou do OAuth com código
+(function verificarCallback() {
+  var params = new URLSearchParams(window.location.search);
+  var code   = params.get('code');
+  var region = params.get('region') || 'eu';
+  if (!code) return;
+
+  mostrarStatus('A obter token com o código OAuth...', 'loading');
+
+  // Trocar código por token
+  fetch('https://' + region + '-apia.coolkit.cc/v2/user/oauth/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CK-Appid': APP_ID
+    },
+    body: JSON.stringify({
+      code: code,
+      redirectUrl: REDIRECT,
+      grantType: 'authorization_code'
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.error === 0 && data.data && data.data.accessToken) {
+      mostrarToken(data.data.accessToken, data.data.refreshToken || '');
+    } else {
+      mostrarStatus('Erro OAuth: ' + JSON.stringify(data), 'err');
+    }
+  })
+  .catch(e => mostrarStatus('Erro: ' + e.message, 'err'));
+})();
+
+async function loginDireto() {
+  var email = document.getElementById('email').value;
+  var pwd   = document.getElementById('password').value;
+  if (!pwd) { mostrarStatus('Insere a password!', 'err'); return; }
+
+  mostrarStatus('A fazer login...', 'loading');
+
+  // Usar proxy CORS para contornar restrições
+  var body = JSON.stringify({
+    email: email,
+    password: pwd,
+    countryCode: "+351"
+  });
+
+  // Tentar via proxy
+  try {
+    var resp = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://eu-apia.coolkit.cc/v2/user/login'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CK-Appid': APP_ID
+      },
+      body: body
+    });
+    var data = await resp.json();
+    if (data.error === 0 && data.data && data.data.at) {
+      mostrarToken(data.data.at, data.data.rt || '');
+      return;
+    }
+    mostrarStatus('Resposta: ' + JSON.stringify(data).substring(0,150), 'err');
+  } catch(e) {
+    mostrarStatus('Erro CORS: ' + e.message + ' — Tenta o Método 1 (OAuth)', 'err');
+  }
+}
+
+function mostrarToken(token, refresh) {
+  document.getElementById('tokenValue').textContent = token;
+  document.getElementById('tokenBox').classList.add('show');
+
+  var code = document.getElementById('gasCode');
+  code.innerHTML = '<span class="highlight">// Cola esta linha no teu Google Apps Script:</span>\n\n'
+    + 'var EWELINK_TOKEN   = "<span class="highlight">' + token + '</span>";\n'
+    + 'var EWELINK_REFRESH = "' + (refresh || 'N/A') + '";\n\n'
+    + '<span class="highlight">// Substitui a função getEwelinkToken() por:</span>\n'
+    + 'function getEwelinkToken() {\n'
+    + '  return EWELINK_TOKEN;\n'
+    + '}';
+
+  mostrarStatus('✅ Token obtido com sucesso!', 'ok');
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function copiarToken() {
+  var t = document.getElementById('tokenValue').textContent;
+  navigator.clipboard.writeText(t).then(function() {
+    alert('Token copiado!');
+  });
+}
+
+function copiarCodigo() {
+  var c = document.getElementById('gasCode').textContent;
+  navigator.clipboard.writeText(c).then(function() {
+    alert('Código copiado!');
+  });
+}
+</script>
+</body>
+</html>
