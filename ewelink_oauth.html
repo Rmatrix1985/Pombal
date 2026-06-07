@@ -168,26 +168,23 @@ function mostrarStatus(msg, tipo) {
 }
 
 async function iniciarOAuth() {
-  var seq = Math.random().toString(36).substring(2, 10);
-  var ts  = Math.floor(Date.now() / 1000);
-
-  // Assinatura correta: HMAC-SHA256(APP_ID + "_" + ts, APP_SECRET) em base64
-  var encoder  = new TextEncoder();
+  var seq = String(Date.now()); // milissegundos - conforme documentação oficial
+  var enc  = new TextEncoder();
   var cryptoKey = await crypto.subtle.importKey(
-    "raw", encoder.encode(APP_SECRET),
+    "raw", enc.encode(APP_SECRET),
     {name:"HMAC", hash:"SHA-256"}, false, ["sign"]
   );
-  var sigBuffer = await crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(APP_ID + "_" + ts));
-  var authorization = btoa(String.fromCharCode(...new Uint8Array(sigBuffer)));
+  var sigBuffer = await crypto.subtle.sign("HMAC", cryptoKey, enc.encode(APP_ID + "_" + seq));
+  var auth = btoa(String.fromCharCode(...new Uint8Array(sigBuffer)));
 
   var url = "https://c2ccdn.coolkit.cc/oauth/index.html"
-    + "?clientId="      + APP_ID
+    + "?state=1234"
+    + "&clientId="      + APP_ID
+    + "&authorization=" + encodeURIComponent(auth)
     + "&seq="           + seq
-    + "&authorization=" + encodeURIComponent(authorization)
     + "&redirectUrl="   + encodeURIComponent(REDIRECT)
-    + "&nonce="         + seq
-    + "&grantType=authorization_code"
-    + "&state="         + seq;
+    + "&nonce=zt123456"
+    + "&grantType=authorization_code";
 
   window.location.href = url;
 }
