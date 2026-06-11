@@ -434,28 +434,28 @@ textarea::placeholder{color:var(--t3)}
     <div class="phico" style="background:radial-gradient(circle,rgba(140,100,255,.3),rgba(80,40,180,.15));border:1px solid rgba(124,92,240,.25)">🧠</div>
     <div>
       <div class="phtitle">IA Assistente</div>
-      <div class="phsub" style="display:flex;align-items:center;gap:5px"><div class="gdot"></div> Pombal IA · Ricardo Ferreira</div>
+      <div class="phsub" style="display:flex;align-items:center;gap:5px"><div class="gdot"></div> Pombal IA V13 · Base de dados completa + Web</div>
     </div>
   </div>
   <div class="chatmsgs" id="msgs">
     <div class="wc" id="welcome">
       <span class="wcico">🕊️</span>
       <div class="wct">Olá Ricardo!</div>
-      <div class="wcs">Sou o teu assistente do pombal. Pergunta sobre entradas, ração, alimentação, o sistema...</div>
+      <div class="wcs">Sou o teu assistente do pombal. Conheço todos os teus produtos, planos de criação e borrachos. Para dúvidas extra, pesquiso na internet. 🔍</div>
     </div>
   </div>
   <div class="chatbot">
     <div class="chips">
       <div class="chip" onclick="csend(this)">Que ração uso?</div>
       <div class="chip" onclick="csend(this)">Pombos hoje</div>
-      <div class="chip" onclick="csend(this)">Validade da ração</div>
-      <div class="chip" onclick="csend(this)">Composição da ração</div>
-      <div class="chip" onclick="csend(this)">Zona alimentação</div>
+      <div class="chip" onclick="csend(this)">Plano de criação</div>
+      <div class="chip" onclick="csend(this)">Plano dos borrachos</div>
+      <div class="chip" onclick="csend(this)">Tenho algo para tricomonas?</div>
+      <div class="chip" onclick="csend(this)">Produtos para respiratório</div>
+      <div class="chip" onclick="csend(this)">Dose do Herbolan</div>
+      <div class="chip" onclick="csend(this)">Klaus AminoPrime dose</div>
       <div class="chip" onclick="csend(this)">Resumo do dia</div>
       <div class="chip" onclick="csend(this)">Que produtos tenho?</div>
-      <div class="chip" onclick="csend(this)">Tenho algo para tricomonas?</div>
-      <div class="chip" onclick="csend(this)">Que vitaminas tenho?</div>
-      <div class="chip" onclick="csend(this)">Tenho algo para saúde intestinal?</div>
     </div>
     <div class="cin">
       <div class="cinw">
@@ -528,37 +528,81 @@ const POMBAL={
     whatsapp:"Callmebot · 351917157161 · apikey 8022833"
   },
   produtos:{
-    agua:[
-      {nome:"HexaPlus",cat:"Tricomoníase / Desinfeção",desc:"Controlo da tricomoníase e desinfeção da água.",dose:"10ml/L durante 2 dias"},
-      {nome:"Vitamino L (Zoopan)",cat:"Vitamínico",desc:"Vitaminas, recuperação e crescimento dos borrachos.",dose:"2ml/L"},
-      {nome:"Protovit",cat:"Vitamínico",desc:"Vitaminas.",dose:"Seguir indicação"},
-      {nome:"Eletrólitos",cat:"Recuperação",desc:"Recuperação pós-esforço.",dose:"Seguir indicação"},
-      {nome:"Rovamycine",cat:"Respiratório",desc:"Vias respiratórias.",dose:"Seguir indicação"},
-      {nome:"Oxigénio Plus",cat:"Respiratório / Tricomonas",desc:"Respiratório e tricomonas.",dose:"Seguir indicação"},
-      {nome:"Broncolis",cat:"Broncodilatador",desc:"Broncodilatador.",dose:"Seguir indicação"},
-      {nome:"Mel de Eucalipto",cat:"Catarros / Respiratório",desc:"Catarros e vias respiratórias.",dose:"Seguir indicação"},
-      {nome:"Magnésio + B6",cat:"Muscular",desc:"Recuperação muscular.",dose:"Seguir indicação"},
-      {nome:"Água Limpa",cat:"Qualidade da água",desc:"Melhora a qualidade da água.",dose:"Seguir indicação"},
-      {nome:"Optiresp",cat:"Respiratório",desc:"Respiratório.",dose:"Seguir indicação"},
-      {nome:"Glicose",cat:"Energia",desc:"Energia rápida.",dose:"Seguir indicação"},
-      {nome:"Chá + Pó Alcalino",cat:"Alcalinizante",desc:"Chá de ervas e alcalinização.",dose:"Seguir indicação"},
-      {nome:"Herbolan Verselle Laga",cat:"Chá de ervas",desc:"Chá de ervas.",dose:"Seguir indicação"}
+    vitaminas:[
+      {nome:"Vitamino L",cat:"Vitaminas + Aminoácidos + L-Carnitina",funcao:["Recuperação","Crescimento","Criação","Muda","Vitalidade"],admin:"Água",dose:"2 ml por litro de água"},
+      {nome:"Becozyme",cat:"Complexo Vitamina B",funcao:["Recuperação","Metabolismo","Apoio após esforço"],admin:"Água",dose:"A confirmar"},
+      {nome:"Protovit",cat:"Multivitamínico",funcao:["Suplementação vitamínica","Manutenção"],admin:"Água",dose:"A confirmar"}
     ],
-    racao:[
-      {nome:"Bio Sac Crómio",cat:"Probiótico",desc:"Probiótico e flora intestinal.",dose:"Na ração"},
-      {nome:"Levedura de Cerveja",cat:"Vitamínico / Digestão",desc:"Vitaminas B, digestão e muda.",dose:"Na ração"},
-      {nome:"L-Carnitine Forte",cat:"Energia",desc:"Energia.",dose:"Na ração"},
-      {nome:"Energy Activator",cat:"Energético",desc:"Mistura energética.",dose:"Na ração"},
-      {nome:"Optidigest",cat:"Digestão",desc:"Digestão e óleos essenciais.",dose:"Na ração"},
-      {nome:"Klaus Aminoprime",cat:"Aminoácidos",desc:"Aminoácidos e cálcio.",dose:"Na ração"}
+    aminoacidos:[
+      {nome:"Klaus AminoPrime",cat:"Aminoácidos",funcao:["Aminoácidos essenciais","Cálcio","Fertilidade","Formação dos ovos","Crescimento dos borrachos","Recuperação"],admin:"Água",dose_normal:"10 ml por litro",dose_reforco:"20 ml por litro"}
     ],
-    tratamentos:[
-      {nome:"Flagyl",cat:"Tricomonas",desc:"Tricomonas.",dose:"Seguir indicação"},
-      {nome:"Antibiótico Genellari",cat:"Tricomonas / Salmonelas",desc:"Tricomonas e salmonelas.",dose:"Seguir indicação"},
-      {nome:"Bactrim",cat:"Bactérias",desc:"Bactérias.",dose:"Seguir indicação"},
-      {nome:"Baytril",cat:"Bactérias / Respiratório",desc:"Bactérias e respiratório.",dose:"Seguir indicação"},
-      {nome:"Salmacoli Zoopan",cat:"Salmonelas",desc:"Salmonelas.",dose:"Seguir indicação"}
+    probioticos:[
+      {nome:"Bio-Sac Crómio",cat:"Probiótico / Digestão",funcao:["Flora intestinal","Digestão","Absorção de nutrientes","Recuperação após tratamentos"],admin:"Ração",dose:"A confirmar"},
+      {nome:"Levedura de Cerveja",cat:"Probiótico / Vitamínico",funcao:["Vitaminas B","Crescimento","Digestão","Recuperação","Muda"],admin:"Ração",dose:"10 g por kg de ração"},
+      {nome:"Herbolan",cat:"Flora intestinal",funcao:["Flora intestinal","Digestão","Imunidade","Recuperação"],admin:"Água",dose:"15 ml por litro"},
+      {nome:"Optidigest",cat:"Digestão",funcao:["Óleos essenciais","Digestão","Flora intestinal"],admin:"Ração",dose:"A confirmar"}
+    ],
+    energia:[
+      {nome:"Glucose + Vitamins",cat:"Energia / Recuperação",funcao:["Recuperação rápida","Energia imediata","Reidratação"],admin:"Água",dose:"2 a 5 colheres doseadoras por litro"},
+      {nome:"Glicose",cat:"Energia",funcao:["Energia rápida"],admin:"Água",dose:"A confirmar"},
+      {nome:"Energy Activator",cat:"Energia concursos",funcao:["Energia para concursos"],admin:"Ração",dose:"A confirmar"},
+      {nome:"L-Carnitine Forte",cat:"Energia / Músculo",funcao:["Conversão de gordura em energia","Resistência"],admin:"Ração",dose:"A confirmar"}
+    ],
+    tricomonas:[
+      {nome:"HexaPlus",cat:"Tricomonas",funcao:["Controlo de tricomonas","Higiene da água"],admin:"Água",dose_preventiva:"5 ml por litro",dose_tratamento:"10 ml por litro"},
+      {nome:"Flagyl",cat:"Tricomonas",funcao:["Tratamento de tricomonas"],admin:"Água",dose:"Conforme tratamento"},
+      {nome:"Oxygen Plus",cat:"Respiratório / Tricomonas",funcao:["Limpeza das vias respiratórias","Apoio respiratório","Apoio em tricomonas"],admin:"Gotas nasais",dose:"1 gota por narina"}
+    ],
+    respiratorio:[
+      {nome:"Broncolis",cat:"Respiratório",funcao:["Fluidificante","Expectorante","Broncodilatador"],admin:"Água",dose:"1 a 2 ml por litro",duracao:"3 a 5 dias"},
+      {nome:"Optiprobios Zooresp",cat:"Respiratório",funcao:["Apoio respiratório"],admin_agua:"10 a 20 ml por litro",admin_racao:"20 a 40 ml por kg",duracao:"3 a 5 dias"},
+      {nome:"Rovamycine",cat:"Respiratório",funcao:["Vias respiratórias"],dose:"A confirmar"},
+      {nome:"Optiresp",cat:"Respiratório",funcao:["Vias respiratórias"],dose:"A confirmar"},
+      {nome:"Mel de Eucalipto",cat:"Respiratório",funcao:["Muco","Catarros","Recuperação respiratória"],dose:"A confirmar"},
+      {nome:"Pantasmoke",cat:"Fumigação",funcao:["Fumigação respiratória","Desinfeção do pombal"],admin:"Fumigação"}
+    ],
+    vermes:[
+      {nome:"Vermizoo",cat:"Antiparasitário",subst:"Levamisol 5%",funcao:["Vermes intestinais","Capillaria","Ascarídeos","Heterakis"],admin:"Água",dose:"2 a 3 g por litro"}
+    ],
+    bacterias:[
+      {nome:"Bactrim",cat:"Antibacteriano",funcao:["Infeções bacterianas"],dose:"A confirmar"},
+      {nome:"Baytril",cat:"Antibacteriano",funcao:["Infeções bacterianas","Respiratório"],dose:"A confirmar"},
+      {nome:"Antibiótico Genellari",cat:"Salmonelas / Bactérias",funcao:["Salmonelas","Bactérias"],dose:"A confirmar"},
+      {nome:"Salmacoli Zoopan",cat:"Salmonelas",funcao:["Salmonelas"],dose:"A confirmar"}
+    ],
+    suplementos_especiais:[
+      {nome:"Victory Taurine",cat:"Recuperação / Músculo",funcao:["Recuperação","Resistência","Apoio muscular"],dose:"A confirmar"},
+      {nome:"Geledor 7 em 1",cat:"Imunidade / Recuperação",funcao:["Imunidade","Recuperação","Apoio respiratório"],admin:"Água",dose:"10 ml por litro",duracao:"3 a 5 dias"}
+    ],
+    higiene:[
+      {nome:"Belgavet Balneo",cat:"Banho",funcao:["Banho","Limpeza da plumagem","Relaxamento muscular"],admin:"Água de banho",dose:"2 ml por litro"},
+      {nome:"Talco para Ninhos",cat:"Higiene",funcao:["Mantém ninhos secos","Ajuda contra ácaros","Higiene dos borrachos"],admin:"Aplicação direta"}
+    ],
+    oleos:[
+      {nome:"Óleo de Girassol",cat:"Óleos",funcao:["Energia","Fixação de suplementos","Melhora plumagem"],admin:"Ração",dose:"5 a 10 ml por kg de ração"}
     ]
+  },
+  plano_criacao:{
+    objetivo:"Fertilidade, ovos de qualidade, leite de papo, crescimento dos borrachos",
+    "Segunda":{produto:"Herbolan",funcao:["Flora intestinal","Imunidade","Digestão"]},
+    "Terça":{produto:"Klaus AminoPrime",dose:"10 ml/L",funcao:["Aminoácidos","Cálcio","Fertilidade","Formação dos ovos"]},
+    "Quarta":{produtos:["Óleo de Girassol 5ml/kg ração","Levedura de Cerveja 10g/kg ração"],funcao:["Complexo B","Crescimento","Condição física"]},
+    "Quinta":{produto:"Água limpa"},
+    "Sexta":{produto:"Belgavet Balneo",dose:"2ml/L banho",funcao:["Limpeza plumagem","Relaxamento","Saúde das penas"]},
+    "Sábado":{produto:"Klaus AminoPrime",dose:"10 ml/L"},
+    "Domingo":{produto:"Água limpa"},
+    quando_necessario:["Bio-Sac Crómio (após tratamentos/stress)","Broncolis 1-2ml/L 3-5 dias","Optiprobios Zooresp 10-20ml/L 3-5 dias","Oxygen Plus 1 gota/narina","Vermizoo 2-3g/L 3-4x/ano","Talco para ninhos ao renovar"]
+  },
+  plano_borrachos:{
+    objetivo:"Crescimento, imunidade, estrutura óssea, desenvolvimento muscular",
+    "Segunda":{produto:"Herbolan",funcao:["Flora intestinal","Digestão","Imunidade"]},
+    "Terça":{produto:"Klaus AminoPrime",dose:"10 ml/L",funcao:["Crescimento ósseo","Desenvolvimento muscular"]},
+    "Quarta":{produtos:["Óleo de Girassol 5ml/kg ração","Levedura de Cerveja 10g/kg ração"],funcao:["Vitaminas B","Crescimento","Pena forte"]},
+    "Quinta":{produto:"Água limpa"},
+    "Sexta":{produto:"Belgavet Balneo",dose:"2ml/L banho",funcao:["Plumagem saudável"]},
+    "Sábado":{produto:"Bio-Sac Crómio",funcao:["Flora intestinal","Melhor absorção nutrientes"]},
+    "Domingo":{produto:"Água limpa"},
+    quando_necessario:["Glucose+Vitamins 2-5 col/L (pós doença/stress/transporte)","Broncolis 1-2ml/L (respiratório)","Optiprobios Zooresp 10-20ml/L 3-5 dias","Oxygen Plus 1 gota/narina","Vermizoo 2-3g/L (a partir da idade adequada, 3-4x/ano)","Talco para ninhos regular"]
   },
   esquema_semanal:{
     "Segunda":"Chá + Pó Alcalino",
@@ -595,9 +639,10 @@ async function sys(){
   const tempo=await getTempoAtual();
   return `És o assistente do pombal de competição de Ricardo Ferreira, chamado "Pombal IA".
 OBRIGATÓRIO: Respondes SEMPRE em português de Portugal. NUNCA em inglês.
-Respostas curtas para telemóvel. Sem markdown # ou **. Emojis com moderação.
+Respostas curtas para telemóvel. Sem markdown # ou **. Usa emojis com moderação.
+Não uses asteriscos para bold. Usa travessão (—) para separar itens.
 
-DADOS DO POMBAL:
+BASE DE DADOS COMPLETA DO POMBAL:
 ${JSON.stringify(POMBAL,null,2)}
 
 ${tempo}
@@ -606,6 +651,9 @@ REGRAS IMPORTANTES:
 - "Asas D'Ouro Premium" = "Columbofauna Criação Extra" — mesmo produto, frente e verso do saco
 - Para tempo/meteorologia usa os dados acima que são em tempo real de Paços de Ferreira
 - Direção do vento: explica se é favorável para treino/solta de pombos
+- Se não souberes a dose exata de um produto, podes pesquisar na internet para complementar
+- Para dúvidas técnicas de columbofilia que não estejam na base de dados, pesquisa na internet e dá uma resposta fundamentada
+- Quando deres doses ou protocolos de tratamento, sê sempre preciso e cita a fonte se vier da internet
 - SEMPRE em português de Portugal`;}
 
 async function sendMsg(txt){
@@ -622,46 +670,47 @@ async function sendMsg(txt){
   document.getElementById('sb').disabled=true;
 
   const t=typing();
-  await new Promise(r=>setTimeout(r,600));
 
-  let r='Não encontrei informação.';
-  const q=msg.toLowerCase();
+  try{
+    const systemPrompt=await sys();
+    hist.push({role:'user',content:msg});
 
-  if(q.includes('ração')) r='Usas Asas D\'Ouro Premium / Columbofauna Criação Extra. Saco 25kg. Validade: 03-09-2026.';
-  else if(q.includes('pombos') || q.includes('hoje')) r='Entraram 23 pombos hoje. Primeiro: 06:42. Último: 17:45.';
-  else if(q.includes('aliment')) r='Zona de alimentação: 8 visitas hoje. Média de permanência: 21 minutos.';
-  else if(q.includes('validade')) r='A ração está válida até 03-09-2026.';
-  else if(q.includes('composição')) r='Milho Miúdo, Sorgo Vermelho, Sorgo Branco, Ervilhaca, Ervilha Verde, Ervilha Amarela, Ervilha Castanha, Cártamo e Trigo.';
-  else if(q.includes('resumo')) r='Resumo: 23 entradas hoje, 8 visitas à alimentação e sistema operacional.';
-  else if(q.includes('tempo') || q.includes('meteorologia') || q.includes('previs')) r='Abre o separador Tempo para veres a previsão OpenWeather em tempo real para Paços de Ferreira.';
-  // ÁGUA DE BEBIDA
-  else if(q.includes('hexaplus') || (q.includes('tricomon') && !q.includes('flagyl') && !q.includes('genellar'))) r='✅ HexaPlus — Tricomoníase e desinfeção da água.\nDose: 10ml/L durante 2 dias.';
-  else if(q.includes('vitamino') || q.includes('zoopan') || q.includes('protovit')) r='✅ Vitamino L (Zoopan) / Protovit — Vitaminas e recuperação.\nDose: 2ml/L (Vitamino L).';
-  else if(q.includes('eletról') || q.includes('electrol')) r='✅ Eletrólitos — Recuperação pós-esforço.';
-  else if(q.includes('rovamycin') || q.includes('optiresp') || q.includes('broncolis') || q.includes('oxigén') || q.includes('respirat')) r='✅ Respiratório:\n• Rovamycine — vias respiratórias (Quinta)\n• Optiresp — respiratório\n• Broncolis — broncodilatador\n• Oxigénio Plus — respiratório e tricomonas';
-  else if(q.includes('eucalipto') || q.includes('catarro')) r='✅ Mel de Eucalipto — Catarros e vias respiratórias.';
-  else if(q.includes('magnés') || q.includes('muscul')) r='✅ Magnésio + B6 — Recuperação muscular.';
-  else if(q.includes('glicose') || q.includes('energia rápid')) r='✅ Glicose — Energia rápida.';
-  else if(q.includes('herbolan') || q.includes('chá') || q.includes('alcalin')) r='✅ Chá + Pó Alcalino (Segunda) / Herbolan Verselle Laga — Chá de ervas e alcalinização.';
-  // RAÇÃO
-  else if(q.includes('bio sac') || q.includes('crómio') || q.includes('probiótic')) r='✅ Bio Sac Crómio — Probiótico e flora intestinal. (na ração)';
-  else if(q.includes('levedura') || q.includes('cerveja')) r='✅ Levedura de Cerveja — Vitaminas B, digestão e muda. (na ração)';
-  else if(q.includes('carnitin') || q.includes('l-carnitin')) r='✅ L-Carnitine Forte — Energia. (na ração)';
-  else if(q.includes('energy activat')) r='✅ Energy Activator — Mistura energética. (Sexta e Sábado)';
-  else if(q.includes('optidigest') || q.includes('digest')) r='✅ Optidigest — Digestão e óleos essenciais. (na ração)';
-  else if(q.includes('aminoprime') || q.includes('aminoácid') || q.includes('cálcio')) r='✅ Klaus Aminoprime — Aminoácidos e cálcio. (Terça, na ração)';
-  // TRATAMENTOS
-  else if(q.includes('flagyl')) r='✅ Flagyl — Tricomonas. (Quarta-feira no esquema semanal)';
-  else if(q.includes('genellar') || q.includes('salmacoli') || q.includes('salmonel')) r='✅ Antibiótico Genellari — Tricomonas e salmonelas.\n✅ Salmacoli Zoopan — Salmonelas.';
-  else if(q.includes('bactrim') || q.includes('baytril') || q.includes('bactér')) r='✅ Bactrim — Bactérias.\n✅ Baytril — Bactérias e respiratório.';
-  // ESQUEMA SEMANAL
-  else if(q.includes('esquema') || q.includes('semana') || q.includes('segunda') || q.includes('terça') || q.includes('quarta') || q.includes('quinta') || q.includes('sexta') || q.includes('sábado') || q.includes('domingo')) r='📅 Esquema Semanal de Concursos:\n• Segunda: Chá + Pó Alcalino\n• Terça: Klaus Aminoprime\n• Quarta: Flagyl\n• Quinta: Rovamycine / Optiresp\n• Sexta: Energy Activator\n• Sábado: Energy Activator\n• Domingo: Água Limpa\n\nApoio: Becozyme, Glicose, L-Carnitine Forte, Backs';
-  // PRODUTOS GERAL
-  else if(q.includes('produto') || q.includes('medicament') || q.includes('tratament') || q.includes('tenho algo') || q.includes('tenho alguma') || q.includes('o que tens')) r='📦 Tenho:\nÁGUA: HexaPlus, Vitamino L, Protovit, Eletrólitos, Rovamycine, Oxigénio Plus, Broncolis, Mel Eucalipto, Magnésio+B6, Optiresp, Glicose, Chá Alcalino, Herbolan\nRAÇÃO: Bio Sac Crómio, Levedura Cerveja, L-Carnitine, Energy Activator, Optidigest, Klaus Aminoprime\nTRATAMENTOS: Flagyl, Genellari, Bactrim, Baytril, Salmacoli\n\nPergunta sobre qualquer um!';
-  else r='Sou o assistente do Pombal IA. Podes perguntar sobre ração, entradas, alimentação, produtos, esquema semanal, tempo e mais.';
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:systemPrompt,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:hist
+      })
+    });
 
-  t.remove();
-  addmsg('a', r);
+    const data=await res.json();
+
+    // Extract text from all content blocks (including after tool use)
+    let reply='';
+    if(data.content && data.content.length>0){
+      for(const block of data.content){
+        if(block.type==='text' && block.text) reply+=block.text;
+      }
+    }
+    if(!reply) reply='Não consegui obter uma resposta. Tenta novamente.';
+
+    // Add assistant reply to history (only text for brevity)
+    hist.push({role:'assistant',content:reply});
+    // Keep history max 20 messages
+    if(hist.length>20) hist.splice(0,2);
+
+    t.remove();
+    addmsg('a', reply.trim());
+
+  }catch(e){
+    t.remove();
+    addmsg('a','Erro de ligação. Verifica a tua internet e tenta novamente. 🔌');
+    hist.pop();
+  }
 
   busy=false;
   document.getElementById('sb').disabled=false;
