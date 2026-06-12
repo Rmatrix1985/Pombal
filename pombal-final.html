@@ -434,7 +434,7 @@ textarea::placeholder{color:var(--t3)}
     <div class="phico" style="background:radial-gradient(circle,rgba(140,100,255,.3),rgba(80,40,180,.15));border:1px solid rgba(124,92,240,.25)">🧠</div>
     <div>
       <div class="phtitle">IA Assistente</div>
-      <div class="phsub" style="display:flex;align-items:center;gap:5px"><div class="gdot"></div> Pombal IA V13 · Base de dados completa + Web</div>
+      <div class="phsub" style="display:flex;align-items:center;gap:5px"><div class="gdot"></div> Pombal IA V13 · Base de dados completa · Offline</div>
     </div>
   </div>
   <div class="chatmsgs" id="msgs">
@@ -635,26 +635,163 @@ async function getTempoAtual(){
   }catch(e){return 'Dados meteorológicos indisponíveis.';}
 }
 
-async function sys(){
-  const tempo=await getTempoAtual();
-  return `És o assistente do pombal de competição de Ricardo Ferreira, chamado "Pombal IA".
-OBRIGATÓRIO: Respondes SEMPRE em português de Portugal. NUNCA em inglês.
-Respostas curtas para telemóvel. Sem markdown # ou **. Usa emojis com moderação.
-Não uses asteriscos para bold. Usa travessão (—) para separar itens.
+function responderOffline(msg){
+  const q=msg.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 
-BASE DE DADOS COMPLETA DO POMBAL:
-${JSON.stringify(POMBAL,null,2)}
+  // Encontrar produto por nome
+  function findProduto(nome){
+    const cats=Object.values(POMBAL.produtos);
+    for(const cat of cats){
+      for(const p of cat){
+        if(p.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(nome)) return p;
+      }
+    }
+    return null;
+  }
 
-${tempo}
+  function formatProduto(p){
+    let r=`✅ ${p.nome}`;
+    if(p.cat) r+=`\nCategoria: ${p.cat}`;
+    if(p.funcao) r+=`\nFunção: ${p.funcao.join(', ')}`;
+    if(p.admin) r+=`\nAdministração: ${p.admin}`;
+    if(p.dose) r+=`\nDose: ${p.dose}`;
+    if(p.dose_normal) r+=`\nDose normal: ${p.dose_normal}`;
+    if(p.dose_reforco) r+=`\nDose reforço: ${p.dose_reforco}`;
+    if(p.dose_preventiva) r+=`\nDose preventiva: ${p.dose_preventiva}`;
+    if(p.dose_tratamento) r+=`\nDose tratamento: ${p.dose_tratamento}`;
+    if(p.admin_agua) r+=`\nÁgua: ${p.admin_agua}`;
+    if(p.admin_racao) r+=`\nRação: ${p.admin_racao}`;
+    if(p.duracao) r+=`\nDuração: ${p.duracao}`;
+    if(p.subst) r+=`\nSubstância ativa: ${p.subst}`;
+    return r;
+  }
 
-REGRAS IMPORTANTES:
-- "Asas D'Ouro Premium" = "Columbofauna Criação Extra" — mesmo produto, frente e verso do saco
-- Para tempo/meteorologia usa os dados acima que são em tempo real de Paços de Ferreira
-- Direção do vento: explica se é favorável para treino/solta de pombos
-- Se não souberes a dose exata de um produto, podes pesquisar na internet para complementar
-- Para dúvidas técnicas de columbofilia que não estejam na base de dados, pesquisa na internet e dá uma resposta fundamentada
-- Quando deres doses ou protocolos de tratamento, sê sempre preciso e cita a fonte se vier da internet
-- SEMPRE em português de Portugal`;}
+  // PLANO DE CRIAÇÃO
+  if(q.includes('plano de criacao') || q.includes('plano criacao') || (q.includes('criacao') && q.includes('plano'))){
+    const pc=POMBAL.plano_criacao;
+    return `🥚 Plano de Criação\nObjetivo: ${pc.objetivo}\n\nSeg: ${pc['Segunda'].produto}\nTer: ${pc['Terça'].produto} (${pc['Terça'].dose})\nQua: ${pc['Quarta'].produtos.join(' + ')}\nQui: Água limpa\nSex: ${pc['Sexta'].produto} (${pc['Sexta'].dose})\nSáb: ${pc['Sábado'].produto} (${pc['Sábado'].dose})\nDom: Água limpa\n\nQuando necessário:\n${pc.quando_necessario.join('\n')}`;
+  }
+
+  // PLANO BORRACHOS
+  if(q.includes('plano') && (q.includes('borracho') || q.includes('borrach'))){
+    const pb=POMBAL.plano_borrachos;
+    return `🐣 Plano de Borrachos\nObjetivo: ${pb.objetivo}\n\nSeg: ${pb['Segunda'].produto}\nTer: ${pb['Terça'].produto} (${pb['Terça'].dose})\nQua: ${pb['Quarta'].produtos.join(' + ')}\nQui: Água limpa\nSex: ${pb['Sexta'].produto} (${pb['Sexta'].dose})\nSáb: ${pb['Sábado'].produto}\nDom: Água limpa\n\nQuando necessário:\n${pb.quando_necessario.join('\n')}`;
+  }
+
+  // ESQUEMA SEMANAL CONCURSOS
+  if(q.includes('esquema') || (q.includes('semana') && q.includes('concurso'))){
+    const es=POMBAL.esquema_semanal;
+    return `📅 Esquema Semanal Concursos\nSeg: ${es['Segunda']}\nTer: ${es['Terça']}\nQua: ${es['Quarta']}\nQui: ${es['Quinta']}\nSex: ${es['Sexta']}\nSáb: ${es['Sábado']}\nDom: ${es['Domingo']}\n\nApoio: ${es.apoio.join(', ')}`;
+  }
+
+  // DIA ESPECÍFICO
+  const dias=['segunda','terca','quarta','quinta','sexta','sabado','domingo'];
+  const diasReal=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+  for(let i=0;i<dias.length;i++){
+    if(q.includes(dias[i])){
+      const pc=POMBAL.plano_criacao[diasReal[i]];
+      const pb=POMBAL.plano_borrachos[diasReal[i]];
+      let r=`📅 ${diasReal[i]}:\n`;
+      if(pc) r+=`Criação: ${pc.produto||pc.produtos?.join('+')||'Água limpa'}\n`;
+      if(pb) r+=`Borrachos: ${pb.produto||pb.produtos?.join('+')||'Água limpa'}`;
+      return r;
+    }
+  }
+
+  // BANHO
+  if(q.includes('banho')){
+    const p=findProduto('belgavet');
+    return p ? formatProduto(p) : '🛁 Para o banho: Belgavet Balneo — 2 ml por litro de água de banho.\nFunção: limpeza da plumagem, relaxamento muscular, saúde das penas.';
+  }
+
+  // TRICOMONAS
+  if(q.includes('tricomon') || q.includes('hexaplus') || q.includes('flagyl')){
+    const h=findProduto('hexaplus');
+    const f=findProduto('flagyl');
+    const o=findProduto('oxygen');
+    return `🦠 Produtos para Tricomonas:\n\n${formatProduto(h)}\n\n${formatProduto(f)}\n\n${formatProduto(o)}`;
+  }
+
+  // RESPIRATÓRIO
+  if(q.includes('respirat') || q.includes('broncolis') || q.includes('pulmao') || q.includes('tosse') || q.includes('catarro') || q.includes('muco')){
+    const prods=POMBAL.produtos.respiratorio.map(p=>formatProduto(p)).join('\n\n');
+    return `🫁 Produtos Respiratórios:\n\n${prods}`;
+  }
+
+  // VERMES
+  if(q.includes('verme') || q.includes('vermizoo') || q.includes('parasit') || q.includes('levamisol')){
+    const p=findProduto('vermizoo');
+    return p ? formatProduto(p) : '';
+  }
+
+  // SALMONELAS / BACTÉRIAS
+  if(q.includes('salmonel') || q.includes('bacteria') || q.includes('bacter') || q.includes('bactrim') || q.includes('baytril') || q.includes('genellar') || q.includes('salmacoli')){
+    const prods=POMBAL.produtos.bacterias.map(p=>formatProduto(p)).join('\n\n');
+    return `🧫 Antibacterianos / Salmonelas:\n\n${prods}`;
+  }
+
+  // ENERGIA
+  if(q.includes('energia') || q.includes('glucose') || q.includes('glicose') || q.includes('carnitin') || q.includes('activator')){
+    const prods=POMBAL.produtos.energia.map(p=>formatProduto(p)).join('\n\n');
+    return `⚡ Produtos de Energia:\n\n${prods}`;
+  }
+
+  // VITAMINAS
+  if(q.includes('vitamin') || q.includes('vitamino') || q.includes('becozyme') || q.includes('protovit')){
+    const prods=POMBAL.produtos.vitaminas.map(p=>formatProduto(p)).join('\n\n');
+    return `💊 Vitaminas:\n\n${prods}`;
+  }
+
+  // PROBIÓTICOS / DIGESTÃO / INTESTINO
+  if(q.includes('probiot') || q.includes('intestin') || q.includes('digest') || q.includes('flora') || q.includes('herbolan') || q.includes('levedura') || q.includes('bio-sac') || q.includes('bio sac')){
+    const prods=POMBAL.produtos.probioticos.map(p=>formatProduto(p)).join('\n\n');
+    return `🌿 Probióticos / Digestão:\n\n${prods}`;
+  }
+
+  // AMINOÁCIDOS / KLAUS
+  if(q.includes('aminoacid') || q.includes('aminoprime') || q.includes('klaus') || q.includes('calcio')){
+    const p=findProduto('klaus');
+    return p ? formatProduto(p) : '';
+  }
+
+  // ÓLEO DE GIRASSOL
+  if(q.includes('oleo') || q.includes('girassol')){
+    const p=findProduto('girassol');
+    return p ? formatProduto(p) : '';
+  }
+
+  // HIGIENE / TALCO / NINHOS
+  if(q.includes('talco') || q.includes('ninho') || q.includes('higiene')){
+    const prods=POMBAL.produtos.higiene.map(p=>formatProduto(p)).join('\n\n');
+    return `🧹 Higiene:\n\n${prods}`;
+  }
+
+  // PRODUTO ESPECÍFICO por nome
+  const nomeProdutos=['herbolan','vitamino','becozyme','protovit','aminoprime','bio-sac','biosac','levedura','optidigest','glucose','glicose','energy activator','carnitine','hexaplus','flagyl','oxygen','broncolis','optiprobios','rovamycine','optiresp','eucalipto','pantasmoke','vermizoo','bactrim','baytril','genellar','salmacoli','victory','geledor','belgavet','talco','girassol'];
+  for(const n of nomeProdutos){
+    if(q.includes(n)){
+      const p=findProduto(n.replace('-',''));
+      if(p) return formatProduto(p);
+    }
+  }
+
+  // TODOS OS PRODUTOS
+  if(q.includes('produto') || q.includes('tenho') || q.includes('lista') || q.includes('o que tens')){
+    return `📦 Produtos disponíveis:\n\nVITAMINAS: ${POMBAL.produtos.vitaminas.map(p=>p.nome).join(', ')}\n\nAMINOÁCIDOS: ${POMBAL.produtos.aminoacidos.map(p=>p.nome).join(', ')}\n\nPROBIÓTICOS: ${POMBAL.produtos.probioticos.map(p=>p.nome).join(', ')}\n\nENERGIA: ${POMBAL.produtos.energia.map(p=>p.nome).join(', ')}\n\nTRICOMONAS: ${POMBAL.produtos.tricomonas.map(p=>p.nome).join(', ')}\n\nRESPIRATÓRIO: ${POMBAL.produtos.respiratorio.map(p=>p.nome).join(', ')}\n\nVERMES: ${POMBAL.produtos.vermes.map(p=>p.nome).join(', ')}\n\nBACTÉRIAS: ${POMBAL.produtos.bacterias.map(p=>p.nome).join(', ')}\n\nHIGIENE: ${POMBAL.produtos.higiene.map(p=>p.nome).join(', ')}`;
+  }
+
+  // RAÇÃO
+  if(q.includes('racao') || q.includes('ração')){
+    return '🌾 Ração: Asas D\'Ouro Premium / Columbofauna Criação Extra (mesmo produto, frente e verso do saco).\nMilho Inteiro: Cereais Ovargado.';
+  }
+
+  // TEMPO / METEOROLOGIA
+  if(q.includes('tempo') || q.includes('meteor') || q.includes('chuva') || q.includes('vento') || q.includes('temperatura')){
+    return '🌤 Abre o separador Tempo para a previsão em tempo real de Paços de Ferreira.';
+  }
+
+  return `Podes perguntar sobre:\n• Produtos e doses (ex: "dose do Herbolan")\n• Plano de criação / borrachos\n• Tricomonas, respiratório, vermes, bactérias\n• Banho, higiene, energia, vitaminas\n• Esquema semanal de concursos`;
+}
 
 async function sendMsg(txt){
   if(busy)return;
@@ -670,47 +807,11 @@ async function sendMsg(txt){
   document.getElementById('sb').disabled=true;
 
   const t=typing();
+  await new Promise(r=>setTimeout(r,400));
 
-  try{
-    const systemPrompt=await sys();
-    hist.push({role:'user',content:msg});
-
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:systemPrompt,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages:hist
-      })
-    });
-
-    const data=await res.json();
-
-    // Extract text from all content blocks (including after tool use)
-    let reply='';
-    if(data.content && data.content.length>0){
-      for(const block of data.content){
-        if(block.type==='text' && block.text) reply+=block.text;
-      }
-    }
-    if(!reply) reply='Não consegui obter uma resposta. Tenta novamente.';
-
-    // Add assistant reply to history (only text for brevity)
-    hist.push({role:'assistant',content:reply});
-    // Keep history max 20 messages
-    if(hist.length>20) hist.splice(0,2);
-
-    t.remove();
-    addmsg('a', reply.trim());
-
-  }catch(e){
-    t.remove();
-    addmsg('a','Erro de ligação. Verifica a tua internet e tenta novamente. 🔌');
-    hist.pop();
-  }
+  const reply=responderOffline(msg);
+  t.remove();
+  addmsg('a', reply);
 
   busy=false;
   document.getElementById('sb').disabled=false;
