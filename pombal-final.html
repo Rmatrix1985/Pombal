@@ -17,35 +17,20 @@
 :root{--gold:#D4A843;--bg:#09090F;--card:#0F1019;--card2:#13161F;--brd:rgba(255,255,255,0.07);--t1:#F0EDE8;--t2:#888590;--t3:#444658;--green:#3DC97A;--purple:#7C5CF0;--blue:#4A8DE0;}
 html,body{height:100%;overflow:hidden;background:var(--bg)}
 body{font-family:'DM Sans',sans-serif;color:var(--t1);height:100dvh;display:grid;grid-template-rows:1fr 72px}
-
-/* NAV */
 nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:flex-start;padding-top:10px;z-index:100}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;padding:2px 0}
 .ni-i{font-size:21px;transition:transform .2s}
 .ni-l{font-size:9px;color:var(--t3);font-weight:500;letter-spacing:.3px;transition:color .2s}
 .ni.on .ni-l{color:var(--gold)}
 .ni.on .ni-i{transform:translateY(-2px)}
-
-/* PAGE CONTAINER */
 .pages{position:relative;overflow:hidden;height:100%}
 .pg{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column}
 .pg.on{display:flex}
 .pg::-webkit-scrollbar{display:none}
-
-/* HERO */
 .hero{position:relative;height:390px;flex-shrink:0;overflow:hidden}
-.hbg{position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 55% 50% at 72% 55%,rgba(200,140,30,.38) 0%,transparent 55%),
-    radial-gradient(ellipse 70% 60% at 15% 20%,rgba(20,35,70,.6) 0%,transparent 60%),
-    radial-gradient(ellipse 100% 40% at 50% 100%,rgba(140,90,20,.25) 0%,transparent 50%),
-    linear-gradient(180deg,#08101A 0%,#0D1208 35%,#12100A 70%,#09090F 100%)}
-.hbg::before{content:'';position:absolute;bottom:55px;right:0;width:68%;height:220px;
-  background:linear-gradient(180deg,rgba(25,35,20,.5),rgba(15,20,12,.7));
-  clip-path:polygon(0% 100%,0% 35%,3% 35%,3% 20%,8% 20%,8% 35%,15% 35%,15% 15%,20% 15%,20% 35%,28% 35%,28% 8%,33% 8%,33% 35%,42% 35%,42% 22%,47% 22%,47% 35%,55% 35%,55% 5%,60% 5%,60% 35%,68% 35%,68% 18%,73% 18%,73% 35%,82% 35%,82% 25%,87% 25%,87% 35%,94% 35%,94% 30%,100% 30%,100% 100%)}
-.hbg::after{content:'';position:absolute;bottom:80px;right:3%;width:62%;height:110px;
-  background:repeating-linear-gradient(90deg,transparent 0,transparent 10px,rgba(255,200,70,.5) 10px,rgba(255,200,70,.5) 16px,transparent 16px,transparent 28px,rgba(255,200,70,.6) 28px,rgba(255,200,70,.6) 34px,transparent 34px,transparent 52px),
-  repeating-linear-gradient(0deg,transparent 0,transparent 14px,rgba(0,0,0,.8) 14px,rgba(0,0,0,.8) 16px);opacity:.45}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 55% 50% at 72% 55%,rgba(200,140,30,.38) 0%,transparent 55%),radial-gradient(ellipse 70% 60% at 15% 20%,rgba(20,35,70,.6) 0%,transparent 60%),radial-gradient(ellipse 100% 40% at 50% 100%,rgba(140,90,20,.25) 0%,transparent 50%),linear-gradient(180deg,#08101A 0%,#0D1208 35%,#12100A 70%,#09090F 100%)}
+.hbg::before{content:'';position:absolute;bottom:55px;right:0;width:68%;height:220px;background:linear-gradient(180deg,rgba(25,35,20,.5),rgba(15,20,12,.7));clip-path:polygon(0% 100%,0% 35%,3% 35%,3% 20%,8% 20%,8% 35%,15% 35%,15% 15%,20% 15%,20% 35%,28% 35%,28% 8%,33% 8%,33% 35%,42% 35%,42% 22%,47% 22%,47% 35%,55% 35%,55% 5%,60% 5%,60% 35%,68% 35%,68% 18%,73% 18%,73% 35%,82% 35%,82% 25%,87% 25%,87% 35%,94% 35%,94% 30%,100% 30%,100% 100%)}
+.hbg::after{content:'';position:absolute;bottom:80px;right:3%;width:62%;height:110px;background:repeating-linear-gradient(90deg,transparent 0,transparent 10px,rgba(255,200,70,.5) 10px,rgba(255,200,70,.5) 16px,transparent 16px,transparent 28px,rgba(255,200,70,.6) 28px,rgba(255,200,70,.6) 34px,transparent 34px,transparent 52px),repeating-linear-gradient(0deg,transparent 0,transparent 14px,rgba(0,0,0,.8) 14px,rgba(0,0,0,.8) 16px);opacity:.45}
 .hfade{position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(0deg,var(--bg),rgba(9,9,15,.6) 60%,transparent);pointer-events:none;z-index:2}
 .birds{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3}
 .b{position:absolute;font-size:var(--sz,18px);animation:fly var(--dur,10s) linear var(--del,0s) infinite;opacity:0}
@@ -63,8 +48,6 @@ nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid
 .htitle{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:var(--gold);line-height:.9;letter-spacing:-2px;text-shadow:0 4px 30px rgba(212,168,67,.3)}
 .hscript{font-family:'Dancing Script',cursive;font-size:21px;color:rgba(255,255,255,.65);margin-top:6px}
 .htagline{font-size:12px;color:rgba(255,255,255,.42);margin-top:10px;line-height:1.55;font-weight:300}
-
-/* ENTRY CARD */
 .ecard{margin:14px 14px 0;background:rgba(12,11,8,.9);border:1px solid rgba(212,168,67,.22);border-radius:20px;padding:16px 17px;display:flex;align-items:center;gap:14px;overflow:hidden;position:relative}
 .ecard::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,rgba(212,168,67,.05),transparent 50%)}
 .ecircle{width:48px;height:48px;border-radius:50%;background:rgba(212,168,67,.1);border:1.5px solid rgba(212,168,67,.3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
@@ -72,10 +55,7 @@ nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid
 .ecount{font-size:14.5px;color:var(--t1);line-height:1.3}
 .ecount strong{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold)}
 .esub{font-size:11.5px;color:var(--t2);margin-top:3px}
-
-/* GRIDS */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:11px 14px 0}
-
 .gc{border-radius:20px;padding:15px 12px;cursor:pointer;transition:transform .15s;position:relative;overflow:hidden;min-height:148px;display:flex;flex-direction:column}
 .gc:active{transform:scale(.95)}
 .gcico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px;flex-shrink:0}
@@ -88,7 +68,6 @@ nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid
 .gcotxt{font-size:10px;color:var(--green)}
 .gcbars{display:flex;align-items:flex-end;gap:2px;margin-top:9px;height:22px}
 .gcbar{flex:1;border-radius:2px}
-
 .gc1{background:linear-gradient(155deg,#2A1A6E,#1A1040);border:1px solid rgba(124,92,240,.18)}
 .gc1 .gcico{background:rgba(124,92,240,.25);border:1px solid rgba(124,92,240,.3)}
 .gc2{background:linear-gradient(155deg,#142258,#0D1838);border:1px solid rgba(74,141,224,.18)}
@@ -101,8 +80,6 @@ nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid
 .gc5 .gcico{background:rgba(212,168,67,.18);border:1px solid rgba(212,168,67,.25)}
 .gc6{background:linear-gradient(155deg,#25104A,#170A30);border:1px solid rgba(160,80,220,.18)}
 .gc6 .gcico{background:rgba(160,80,220,.22);border:1px solid rgba(160,80,220,.28)}
-
-/* CHAT SHORTCUT */
 .cshort{margin:11px 14px 20px;background:linear-gradient(135deg,#100C22,#0A0816);border:1px solid rgba(124,92,240,.22);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .15s}
 .cshort:active{transform:scale(.97)}
 .cbrain{width:50px;height:50px;border-radius:16px;background:radial-gradient(circle at 40% 40%,rgba(140,100,255,.35),rgba(80,40,180,.15));border:1px solid rgba(124,92,240,.3);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
@@ -110,14 +87,10 @@ nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid
 .cq{font-size:13px;font-weight:500;color:var(--t1);line-height:1.4}
 .chint{font-size:11px;color:var(--t2);margin-top:3px}
 .cgo{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#5030B0);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-
-/* SUB PAGE HEADER */
 .pghd{background:rgba(9,9,15,.98);border-bottom:1px solid var(--brd);padding:50px 16px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0}
 .phico{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
 .phtitle{font-family:'Playfair Display',serif;font-size:18px;font-weight:700}
 .phsub{font-size:11px;color:var(--t2);margin-top:1px}
-
-/* INFO CARDS */
 .ic{margin:12px 14px 0;background:var(--card);border:1px solid var(--brd);border-radius:18px;padding:14px 14px 6px}
 .ictitle{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:12px}
 .ir{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}
@@ -137,16 +110,11 @@ nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid
 .s2v{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;color:var(--gold);line-height:1}
 .s2l{font-size:11px;color:var(--t2);margin-top:5px}
 .pb{padding-bottom:16px}
-
-/* ====== CHAT PAGE — FULL HEIGHT FLEX ====== */
 #pg-chat{display:none;flex-direction:column;height:100%}
 #pg-chat.on{display:flex}
-/* header fixed at top */
 #pg-chat .pghd{flex-shrink:0}
-/* messages scrollable in middle */
 .chatmsgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0}
 .chatmsgs::-webkit-scrollbar{display:none}
-/* chips + input fixed at bottom */
 .chatbot{flex-shrink:0}
 .chips{padding:6px 12px;display:flex;flex-wrap:wrap;gap:6px;}
 .chip{background:var(--card);border:1px solid var(--brd);color:var(--t2);border-radius:20px;padding:6px 14px;font-size:11px;white-space:nowrap;cursor:pointer;flex-shrink:0;transition:all .15s}
@@ -159,8 +127,6 @@ textarea::placeholder{color:var(--t3)}
 .sbtn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#9A6010);border:none;color:#000;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;transition:transform .1s,opacity .2s}
 .sbtn:active{transform:scale(.88)}
 .sbtn:disabled{opacity:.3}
-
-/* MESSAGES */
 .msg{display:flex;gap:9px;max-width:88%;animation:mup .22s ease}
 @keyframes mup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .msg.u{margin-left:auto;flex-direction:row-reverse}
@@ -176,8 +142,6 @@ textarea::placeholder{color:var(--t3)}
 .tdots span:nth-child(2){animation-delay:.2s}
 .tdots span:nth-child(3){animation-delay:.4s}
 @keyframes td{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-5px);opacity:1}}
-
-/* WELCOME */
 .wc{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:32px 24px;text-align:center;gap:10px}
 .wcico{font-size:56px;animation:fl 3.5s ease-in-out infinite;display:block;margin-bottom:4px}
 @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
@@ -186,7 +150,6 @@ textarea::placeholder{color:var(--t3)}
 </style>
 </head>
 <body>
-
 <div class="pages">
 
 <!-- HOME -->
@@ -214,7 +177,7 @@ textarea::placeholder{color:var(--t3)}
     </div>
     <div class="hbot">
       <div class="htitle">Pombal IA</div>
-      <div class="hscript">Ricardo Ferneina 🕊️</div>
+      <div class="hscript">Ricardo Ferreira 🕊️</div>
       <div class="htagline">O teu assistente inteligente para<br>um pombal campeão.</div>
     </div>
   </div>
@@ -233,7 +196,6 @@ textarea::placeholder{color:var(--t3)}
     </svg>
   </div>
 
-  <!-- TEMPO -->
   <div class="ecard" id="weather-card" style="margin-top:10px;cursor:pointer" onclick="nav('pg-tempo',5)">
     <div class="ecircle" id="w-icon">⛅</div>
     <div class="einfo">
@@ -247,7 +209,7 @@ textarea::placeholder{color:var(--t3)}
   </div>
 
   <div class="grid">
-    <div class="gc gc1" onclick="nav('pg-pombais',0)">
+    <div class="gc gc1" onclick="nav('pg-pombais',1)">
       <div class="gcico">🏠</div>
       <div class="gclbl">Estado dos Pombais</div>
       <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:4px">3 pombais ativos</div>
@@ -293,7 +255,7 @@ textarea::placeholder{color:var(--t3)}
     </div>
     <div class="gc gc5">
       <div class="gcico">🏆</div>
-      <div class="gclbl">Resultados e Estatísticas</div>
+      <div class="gclbl">Resultados</div>
       <div class="gcsub" style="color:rgba(255,255,255,.3);font-size:10px;margin-top:2px">Desempenho época</div>
       <div class="gcbars" style="margin-top:auto">
         <div class="gcbar" style="height:35%;background:rgba(212,168,67,.25)"></div>
@@ -302,7 +264,6 @@ textarea::placeholder{color:var(--t3)}
         <div class="gcbar" style="height:55%;background:rgba(212,168,67,.4)"></div>
         <div class="gcbar" style="height:70%;background:rgba(212,168,67,.5)"></div>
       </div>
-      <span class="gcarrow">›</span>
     </div>
     <div class="gc gc6">
       <div class="gcico">📅</div>
@@ -310,15 +271,14 @@ textarea::placeholder{color:var(--t3)}
       <div class="gcsub" style="color:rgba(255,255,255,.3);font-size:10px;margin-top:2px">Próximo evento</div>
       <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#CC88EE;margin-top:6px;line-height:1">31 Mai</div>
       <div class="gcsub" style="margin-top:4px">Treino de Fundo</div>
-      <span class="gcarrow">›</span>
     </div>
   </div>
 
-  <div class="cshort" onclick="nav('pg-chat',5)">
+  <div class="cshort" onclick="nav('pg-chat',6)">
     <div class="cbrain">🧠</div>
     <div class="cinfo">
       <div class="cq">Pergunta qualquer coisa sobre<br>o teu pombal...</div>
-      <div class="chint">Ex: Quantos pombos entram à tarde?</div>
+      <div class="chint">Ex: Dose do Klaus AminoPrime hoje?</div>
     </div>
     <div class="cgo">↑</div>
   </div>
@@ -394,21 +354,31 @@ textarea::placeholder{color:var(--t3)}
     <div style="font-size:11px;color:var(--t2);margin-bottom:10px">= Columbofauna Criação Extra · mesmo saco (frente/verso)</div>
     <div class="ir"><span class="ik">Marca</span><span class="iv">Irmãos Sousa - Moagem Ldª</span></div>
     <div class="ir"><span class="ik">Peso</span><span class="iv">25 kg · Saco vermelho</span></div>
-    <div class="ir"><span class="ik">Categoria</span><span class="iv"><span class="tag to">Criação</span></span></div>
-    <div class="ir"><span class="ik">Natural</span><span class="iv"><span class="tag tg">100% Natural</span></span></div>
-    <div class="ir"><span class="ik">Embalado</span><span class="iv">06-05-2026</span></div>
+    <div class="ir"><span class="ik">Reprodutores</span><span class="iv">40 pombos · 880g/dia</span></div>
+    <div class="ir"><span class="ik">Borrachos</span><span class="iv">45 pombos · 990g/dia</span></div>
+    <div class="ir"><span class="ik">Dose/pombo</span><span class="iv">22g por pombo</span></div>
     <div class="ir"><span class="ik">Validade</span><span class="iv" style="color:var(--green)">03-09-2026 ✓</span></div>
-    <div class="ir"><span class="ik">Lote</span><span class="iv">CC20260506</span></div>
     <div style="padding-top:10px;font-size:11px;color:var(--t2)">Dias restantes</div>
     <div class="vbar"><div class="vfill" id="vf"></div></div>
     <div style="font-size:10px;color:var(--t3);margin-top:4px" id="vd"></div>
-    <div style="font-size:11px;color:var(--t2);margin-top:12px;margin-bottom:4px">Composição:</div>
-    <div class="pills">
+    <div class="pills" style="margin-top:8px">
       <span class="pill">Milho Miúdo</span><span class="pill">Sorgo Vermelho</span><span class="pill">Sorgo Branco</span>
       <span class="pill">Ervilhaca</span><span class="pill">Ervilha Verde</span><span class="pill">Ervilha Amarela</span>
       <span class="pill">Ervilha Castanha</span><span class="pill">Cártamo</span><span class="pill">Trigo</span>
     </div>
   </div>
+
+  <!-- LEMBRETE 12:30 -->
+  <div class="ic" style="margin-top:10px">
+    <div class="ictitle">📅 Lembrete hoje · <span id="lembrete-dia"></span></div>
+    <div id="lembrete-criacao" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;color:var(--gold);margin-bottom:6px">🥚 Reprodutores (40 pombos)</div>
+    </div>
+    <div id="lembrete-borrachos">
+      <div style="font-size:11px;font-weight:600;color:var(--gold);margin-bottom:6px">🐣 Borrachos (45 pombos)</div>
+    </div>
+  </div>
+
   <div class="ic pb" style="margin-top:10px">
     <div class="ictitle">Visitas hoje</div>
     <div class="ir"><span class="ik">🌅 Manhã</span><span class="iv">4 visitas · ~17min</span></div>
@@ -417,45 +387,54 @@ textarea::placeholder{color:var(--t3)}
   </div>
 </div>
 
+<!-- PRODUTOS -->
+<div class="pg" id="pg-produtos">
+  <div class="pghd">
+    <div class="phico" style="background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.2)">💊</div>
+    <div><div class="phtitle">Produtos</div><div class="phsub">Base de dados completa</div></div>
+  </div>
+  <div id="produtos-lista" style="padding-bottom:20px"></div>
+</div>
+
 <!-- TEMPO -->
 <div class="pg" id="pg-tempo">
   <div class="pghd">
     <div class="phico" style="background:linear-gradient(135deg,rgba(74,141,224,.25),rgba(20,80,160,.15));border:1px solid rgba(74,141,224,.2)">⛅</div>
-    <div><div class="phtitle">Previsão do Tempo</div><div class="phsub">Paços de Ferreira · OpenWeather Online</div></div>
+    <div><div class="phtitle">Previsão do Tempo</div><div class="phsub">Paços de Ferreira · OpenWeather</div></div>
   </div>
   <div id="tempo-content" style="padding:12px 14px">
     <div style="color:var(--t2);text-align:center;padding:40px">A carregar...</div>
   </div>
 </div>
 
-<!-- CHAT — estrutura separada completamente -->
+<!-- CHAT -->
 <div id="pg-chat">
   <div class="pghd">
     <div class="phico" style="background:radial-gradient(circle,rgba(140,100,255,.3),rgba(80,40,180,.15));border:1px solid rgba(124,92,240,.25)">🧠</div>
     <div>
       <div class="phtitle">IA Assistente</div>
-      <div class="phsub" style="display:flex;align-items:center;gap:5px"><div class="gdot"></div> Pombal IA V13 · Base de dados completa · Offline</div>
+      <div class="phsub" style="display:flex;align-items:center;gap:5px"><div class="gdot"></div> Pombal IA V14 · Base completa · Doses calculadas</div>
     </div>
   </div>
   <div class="chatmsgs" id="msgs">
     <div class="wc" id="welcome">
       <span class="wcico">🕊️</span>
       <div class="wct">Olá Ricardo!</div>
-      <div class="wcs">Sou o teu assistente do pombal. Conheço todos os teus produtos, planos de criação e borrachos. Para dúvidas extra, pesquiso na internet. 🔍</div>
+      <div class="wcs">Conheço todos os teus produtos com doses calculadas para os teus 40 reprodutores e 45 borrachos. Pergunta à vontade!</div>
     </div>
   </div>
   <div class="chatbot">
     <div class="chips">
       <div class="chip" onclick="csend(this)">Que ração uso?</div>
-      <div class="chip" onclick="csend(this)">Pombos hoje</div>
       <div class="chip" onclick="csend(this)">Plano de criação</div>
       <div class="chip" onclick="csend(this)">Plano dos borrachos</div>
-      <div class="chip" onclick="csend(this)">Tenho algo para tricomonas?</div>
+      <div class="chip" onclick="csend(this)">Dose do Klaus hoje</div>
       <div class="chip" onclick="csend(this)">Produtos para respiratório</div>
-      <div class="chip" onclick="csend(this)">Dose do Herbolan</div>
-      <div class="chip" onclick="csend(this)">Klaus AminoPrime dose</div>
-      <div class="chip" onclick="csend(this)">Resumo do dia</div>
+      <div class="chip" onclick="csend(this)">Tenho algo para tricomonas?</div>
+      <div class="chip" onclick="csend(this)">Lembrete de hoje</div>
       <div class="chip" onclick="csend(this)">Que produtos tenho?</div>
+      <div class="chip" onclick="csend(this)">Dose do Belgavet banho</div>
+      <div class="chip" onclick="csend(this)">Recuperação pós-voo</div>
     </div>
     <div class="cin">
       <div class="cinw">
@@ -474,8 +453,9 @@ textarea::placeholder{color:var(--t3)}
   <button class="ni" id="n1" onclick="nav('pg-pombais',1)"><span class="ni-i">🏚️</span><span class="ni-l">Pombais</span></button>
   <button class="ni" id="n2" onclick="nav('pg-entradas',2)"><span class="ni-i">🕊️</span><span class="ni-l">Entradas</span></button>
   <button class="ni" id="n3" onclick="nav('pg-alim',3)"><span class="ni-i">🍽️</span><span class="ni-l">Alimentação</span></button>
-  <button class="ni" id="n4" onclick="nav('pg-tempo',4)"><span class="ni-i">⛅</span><span class="ni-l">Tempo</span></button>
-  <button class="ni" id="n5" onclick="nav('pg-chat',5)"><span class="ni-i">✨</span><span class="ni-l">IA Assist.</span></button>
+  <button class="ni" id="n4" onclick="nav('pg-produtos',4)"><span class="ni-i">💊</span><span class="ni-l">Produtos</span></button>
+  <button class="ni" id="n5" onclick="nav('pg-tempo',5)"><span class="ni-i">⛅</span><span class="ni-l">Tempo</span></button>
+  <button class="ni" id="n6" onclick="nav('pg-chat',6)"><span class="ni-i">✨</span><span class="ni-l">IA Assist.</span></button>
 </nav>
 
 <script>
@@ -483,225 +463,282 @@ textarea::placeholder{color:var(--t3)}
 const h=new Date().getHours();
 document.getElementById('greet').textContent=h<12?'Bom dia,':h<19?'Boa tarde,':'Boa noite,';
 
-// Validade
+// Validade ração
 (function(){
-  const emb=new Date('2026-05-06'),val=new Date('2026-09-03'),now=new Date();
+  const val=new Date('2026-09-03'),emb=new Date('2026-05-06'),now=new Date();
   const pct=Math.max(0,Math.min(100,(val-now)/(val-emb)*100));
   const dias=Math.max(0,Math.round((val-now)/86400000));
   setTimeout(()=>{const f=document.getElementById('vf');if(f)f.style.width=pct+'%';},400);
   const d=document.getElementById('vd');if(d)d.textContent=dias+' dias restantes';
 })();
 
-// Navigation — completely separate pages, no overlap
-const PAGES=['pg-home','pg-pombais','pg-entradas','pg-alim','pg-tempo','pg-chat'];
-let cur=0;
-function nav(id,idx){
-  // hide current
-  const cpg=document.getElementById(PAGES[cur]);
-  cpg.classList.remove('on');
-  // show new
-  const npg=document.getElementById(id);
-  npg.classList.add('on');
-  cur=idx;
-  // update nav buttons
-  document.querySelectorAll('.ni').forEach((n,i)=>n.classList.toggle('on',i===idx));
-}
-
-// Chat
+// ── BASE DE DADOS COMPLETA ──────────────────────────────────
 const POMBAL={
-  dono:"Ricardo Ferreira",
-  pombos_hoje:{total:23,primeiro:"06:42:15",ultimo:"17:45:22",manha:9,tarde:14,noite:0},
-  zona:{visitas:8,media_min:21,manha:4,tarde:4,noite:0,tempo_saida:"5s"},
-  semana:[{d:"Seg",n:18},{d:"Ter",n:21},{d:"Qua",n:15},{d:"Qui",n:24},{d:"Sex",n:19},{d:"Sáb",n:27},{d:"Dom",n:23}],
+  reprodutores:{pombos:40,racao_g:880,agua_L:2},
+  borrachos:{pombos:45,racao_g:990,agua_L:2},
   racao:{
-    nome:"Asas D'Ouro Premium (frente) = Columbofauna Criação Extra (verso) — mesmo produto",
-    marca:"Irmãos Sousa - Moagem Ldª",peso:25,natural:true,
+    nome:"Asas D'Ouro Premium = Columbofauna Criação Extra (mesmo produto, frente/verso)",
+    marca:"Irmãos Sousa - Moagem Ldª",peso:25,
     composicao:["Milho Miúdo","Sorgo Vermelho","Sorgo Branco","Ervilhaca","Ervilha Verde","Ervilha Amarela","Ervilha Castanha","Cártamo","Trigo"],
-    embalado:"06-05-2026",validade:"03-09-2026",lote:"CC20260506",categoria:"Criação"
+    validade:"03-09-2026",lote:"CC20260506"
   },
   sistema:{
-    esp32:"GPIO 27 conta pombos (debounce 300ms), GPIO 26+25 zona alimentação",
-    blynk:"TMPL52MmisXHP · V0=contador V1=hora V2=terminal V3=resumo",
-    sheets:"Folha POMBOS ENTRADA + aba diária por data",
-    colunas:"POMBO,DATA,HORA,Diferença,Período,Total,PRIMEIRO,ÚLTIMO,DIF TOTAL",
-    periodos:"Manhã<13h · Tarde 13h-20:30h · Noite>20:30h",
+    esp32:"GPIO 27 conta pombos, GPIO 26+25 zona alimentação",
+    blynk:"TMPL52MmisXHP",
     whatsapp:"Callmebot · 351917157161 · apikey 8022833"
   },
   produtos:{
-    vitaminas:[
-      {nome:"Vitamino L",cat:"Vitaminas + Aminoácidos + L-Carnitina",funcao:["Recuperação","Crescimento","Criação","Muda","Vitalidade"],admin:"Água",dose:"2 ml por litro de água"},
-      {nome:"Becozyme",cat:"Complexo Vitamina B",funcao:["Recuperação","Metabolismo","Apoio após esforço"],admin:"Água",dose:"A confirmar"},
-      {nome:"Protovit",cat:"Multivitamínico",funcao:["Suplementação vitamínica","Manutenção"],admin:"Água",dose:"A confirmar"}
-    ],
-    aminoacidos:[
-      {nome:"Klaus AminoPrime",cat:"Aminoácidos",funcao:["Aminoácidos essenciais","Cálcio","Fertilidade","Formação dos ovos","Crescimento dos borrachos","Recuperação"],admin:"Água",dose_normal:"10 ml por litro",dose_reforco:"20 ml por litro"}
-    ],
-    probioticos:[
-      {nome:"Bio-Sac Crómio",cat:"Probiótico / Digestão",funcao:["Flora intestinal","Digestão","Absorção de nutrientes","Recuperação após tratamentos"],admin:"Ração",dose:"A confirmar"},
-      {nome:"Levedura de Cerveja",cat:"Probiótico / Vitamínico",funcao:["Vitaminas B","Crescimento","Digestão","Recuperação","Muda"],admin:"Ração",dose:"10 g por kg de ração"},
-      {nome:"Herbolan",cat:"Flora intestinal",funcao:["Flora intestinal","Digestão","Imunidade","Recuperação"],admin:"Água",dose:"15 ml por litro"},
-      {nome:"Optidigest",cat:"Digestão",funcao:["Óleos essenciais","Digestão","Flora intestinal"],admin:"Ração",dose:"A confirmar"}
-    ],
-    energia:[
-      {nome:"Glucose + Vitamins",cat:"Energia / Recuperação",funcao:["Recuperação rápida","Energia imediata","Reidratação"],admin:"Água",dose:"2 a 5 colheres doseadoras por litro"},
-      {nome:"Glicose",cat:"Energia",funcao:["Energia rápida"],admin:"Água",dose:"A confirmar"},
-      {nome:"Energy Activator",cat:"Energia concursos",funcao:["Energia para concursos"],admin:"Ração",dose:"A confirmar"},
-      {nome:"L-Carnitine Forte",cat:"Energia / Músculo",funcao:["Conversão de gordura em energia","Resistência"],admin:"Ração",dose:"A confirmar"}
-    ],
-    tricomonas:[
-      {nome:"HexaPlus",cat:"Tricomonas",funcao:["Controlo de tricomonas","Higiene da água"],admin:"Água",dose_preventiva:"5 ml por litro",dose_tratamento:"10 ml por litro"},
-      {nome:"Flagyl",cat:"Tricomonas",funcao:["Tratamento de tricomonas"],admin:"Água",dose:"Conforme tratamento"},
-      {nome:"Oxygen Plus",cat:"Respiratório / Tricomonas",funcao:["Limpeza das vias respiratórias","Apoio respiratório","Apoio em tricomonas"],admin:"Gotas nasais",dose:"1 gota por narina"}
-    ],
-    respiratorio:[
-      {nome:"Broncolis",cat:"Respiratório",funcao:["Fluidificante","Expectorante","Broncodilatador"],admin:"Água",dose:"1 a 2 ml por litro",duracao:"3 a 5 dias"},
-      {nome:"Optiprobios Zooresp",cat:"Respiratório",funcao:["Apoio respiratório"],admin_agua:"10 a 20 ml por litro",admin_racao:"20 a 40 ml por kg",duracao:"3 a 5 dias"},
-      {nome:"Rovamycine",cat:"Respiratório",funcao:["Vias respiratórias"],dose:"A confirmar"},
-      {nome:"Optiresp",cat:"Respiratório",funcao:["Vias respiratórias"],dose:"A confirmar"},
-      {nome:"Mel de Eucalipto",cat:"Respiratório",funcao:["Muco","Catarros","Recuperação respiratória"],dose:"A confirmar"},
-      {nome:"Pantasmoke",cat:"Fumigação",funcao:["Fumigação respiratória","Desinfeção do pombal"],admin:"Fumigação"}
-    ],
-    vermes:[
-      {nome:"Vermizoo",cat:"Antiparasitário",subst:"Levamisol 5%",funcao:["Vermes intestinais","Capillaria","Ascarídeos","Heterakis"],admin:"Água",dose:"2 a 3 g por litro"}
-    ],
-    bacterias:[
-      {nome:"Bactrim",cat:"Antibacteriano",funcao:["Infeções bacterianas"],dose:"A confirmar"},
-      {nome:"Baytril",cat:"Antibacteriano",funcao:["Infeções bacterianas","Respiratório"],dose:"A confirmar"},
-      {nome:"Antibiótico Genellari",cat:"Salmonelas / Bactérias",funcao:["Salmonelas","Bactérias"],dose:"A confirmar"},
-      {nome:"Salmacoli Zoopan",cat:"Salmonelas",funcao:["Salmonelas"],dose:"A confirmar"}
-    ],
-    suplementos_especiais:[
-      {nome:"Victory Taurine",cat:"Recuperação / Músculo",funcao:["Recuperação","Resistência","Apoio muscular"],dose:"A confirmar"},
-      {nome:"Geledor 7 em 1",cat:"Imunidade / Recuperação",funcao:["Imunidade","Recuperação","Apoio respiratório"],admin:"Água",dose:"10 ml por litro",duracao:"3 a 5 dias"}
-    ],
-    higiene:[
-      {nome:"Belgavet Balneo",cat:"Banho",funcao:["Banho","Limpeza da plumagem","Relaxamento muscular"],admin:"Água de banho",dose:"2 ml por litro"},
-      {nome:"Talco para Ninhos",cat:"Higiene",funcao:["Mantém ninhos secos","Ajuda contra ácaros","Higiene dos borrachos"],admin:"Aplicação direta"}
-    ],
-    oleos:[
-      {nome:"Óleo de Girassol",cat:"Óleos",funcao:["Energia","Fixação de suplementos","Melhora plumagem"],admin:"Ração",dose:"5 a 10 ml por kg de ração"}
-    ]
+    "Klaus AminoPrime":{emoji:"💪",cat:"Aminoácidos + Cálcio",
+      funcao:["Aminoácidos essenciais","Cálcio","Fertilidade","Formação dos ovos","Crescimento borrachos","Recuperação muscular"],
+      admin:"Água",dose_normal:"10 ml/L",dose_reforco:"20 ml/L",
+      dose_2L_normal:"20 ml nos 2L",dose_2L_reforco:"40 ml nos 2L",
+      onde:"rcaportugal.com · campestre.pt · goldpet.pt",preco:"~12€/500ml"},
+    "Oropharma Herbolan":{emoji:"🌿",cat:"Flora intestinal + Probiótico",
+      funcao:["Flora intestinal","Digestão","Imunidade","Resistência natural"],
+      admin:"Ração",dose:"Polvilhar na ração humedecida",
+      onde:"campestre.pt · petcity.pt",preco:"~7,10€"},
+    "Belgavet Balneo BVP":{emoji:"🛁",cat:"Banho · Minerais",
+      funcao:["Limpeza plumagem","Muda","Minerais","Imunidade","Circulação"],
+      admin:"Banho (não beber!)",dose_litro:"20ml/10L (2ml/L)",dose_2L:"4 ml nos 2L",
+      frequencia:"1x/semana (sexta). 2x/semana na muda",
+      onde:"rcaportugal.com",preco:"~11€/1L"},
+    "Glucose + Vitamins":{emoji:"⚡",cat:"Recuperação · Energia",
+      funcao:["Energia rápida","Recuperação pós-voo","Reidratação","Estimula ingestão de água"],
+      admin:"Água",dose:"2-5 colheres doseadoras/L",dose_2L:"4-10 colheres nos 2L",
+      nota:"Dar no dia da chegada. Preparar fresco diariamente",
+      onde:"petcity.pt · campestre.pt",preco:"~8€/400g"},
+    "Levedura Cerveja Zoopan":{emoji:"🍺",cat:"Vitaminas B · Proteína",
+      funcao:["Complexo B","Proteína 39%","Crescimento","Plumagem","Digestão"],
+      admin:"Ração",dose_kg:"10g/kg ração",
+      dose_reprodutores:"8,8g (880g ração)",dose_borrachos:"9,9g (990g ração)",
+      onde:"alojaagricola.pt",preco:"~10,30€/1kg"},
+    "Óleo Girassol":{emoji:"🫒",cat:"Energia · Fixador",
+      funcao:["Energia","Gorduras insaturadas","Fixa suplementos na ração","Absorção vitaminas"],
+      admin:"Ração",dose_kg:"5ml/kg ração",
+      dose_reprodutores:"4,4ml (880g ração)",dose_borrachos:"5ml (990g ração)",
+      onde:"Pingo Doce · qualquer supermercado",preco:"~1,50€/1L"},
+    "Bio-Sac Crómio":{emoji:"🦠",cat:"Probiótico · Flora",
+      funcao:["Flora intestinal","Pós-antibiótico","Imunidade","Absorção nutrientes","Pós-stress"],
+      admin:"Ração ou água",dose:"Conforme fabricante",
+      onde:"goldpet.pt"},
+    "Broncolis":{emoji:"🫁",cat:"Respiratório · Expetorante",
+      funcao:["Bromexina + Eucaliptol","Fluidifica muco","Broncodilatador","Anti-séptico respiratório"],
+      admin:"Água",dose_litro:"1-2ml/L",dose_2L:"2-4ml nos 2L",duracao:"3-5 dias",
+      nota:"Pode usar com antibióticos",
+      onde:"goldpet.pt"},
+    "Zooresp Optiprobios":{emoji:"🌬️",cat:"Respiratório",
+      funcao:["Vias respiratórias","Prevenção","Performance produtiva"],
+      admin_agua:"10-20ml/L",admin_racao:"20-40ml/500g",
+      dose_2L:"20-40ml nos 2L",duracao:"3-5 dias",
+      onde:"goldpet.pt · campestre.pt",preco:"~7€"},
+    "Vermizoo":{emoji:"🪱",cat:"Antiparasitário · Levamisol",
+      subst:"Cloridrato de Levamisol 50g/kg",
+      funcao:["Vermes intestinais","Capillaria","Ascarídeos","Heterakis","Syngamus"],
+      admin:"Água",dose_litro:"2-3g/L",dose_2L:"4-6g nos 2L",
+      nota:"Medicamento veterinário. 3-4x/ano",
+      onde:"goldpet.pt"},
+    "Geledor 7-em-1":{emoji:"🛡️",cat:"Proteção viral · Imunidade",
+      funcao:["Salmonella","Newcastle","Varíola","Adenovírus","Clamídia","Micoplasma","Influenza"],
+      admin:"Água",dose_litro:"10ml/L",dose_2L:"20ml nos 2L",duracao:"3-5 dias",
+      onde:"AliExpress (Geledor)",preco:"~15-16€/100ml"},
+    "Pó de Talco":{emoji:"🏳️",cat:"Higiene · Uso externo",
+      funcao:["Piolhos","Parasitas externos","Higiene penas","Mantém ninhos secos"],
+      admin:"Uso externo — polvilhar nas penas e ninhos",
+      onde:"Pingo Doce · farmácias",preco:"~1-2€"},
+    "HexaPlus":{emoji:"💧",cat:"Tricomonas · Higiene água",
+      funcao:["Controlo tricomonas","Higiene da água","Prevenção"],
+      admin:"Água",dose_preventiva:"5ml/L",dose_tratamento:"10ml/L",
+      dose_prev_2L:"10ml nos 2L",dose_trat_2L:"20ml nos 2L"},
+    "Flagyl":{emoji:"💊",cat:"Tricomonas · Antibacteriano",
+      funcao:["Tratamento tricomonas","Giardíase"],
+      admin:"Água",dose:"Conforme tratamento"},
+    "Oxygen Plus":{emoji:"🌊",cat:"Respiratório · Tricomonas",
+      funcao:["Limpeza vias respiratórias","Apoio tricomonas"],
+      admin:"Gotas nasais",dose:"1 gota/narina"},
+    "Vitamino L":{emoji:"💉",cat:"Vitaminas + Aminoácidos + L-Carnitina",
+      funcao:["Recuperação","Crescimento","Vitalidade","Muda"],
+      admin:"Água",dose:"2ml/L"},
+    "Becozyme":{emoji:"🔵",cat:"Complexo B",
+      funcao:["Recuperação","Metabolismo","Apoio após esforço"],admin:"Água"},
+    "Rovamycine":{emoji:"💊",cat:"Antibiótico respiratório",
+      funcao:["Vias respiratórias","Micoplasma"],admin:"Água"},
+    "Baytril":{emoji:"💊",cat:"Antibiótico",
+      funcao:["Infeções bacterianas","Respiratório"],admin:"Água"},
+    "Bactrim":{emoji:"💊",cat:"Antibiótico",
+      funcao:["Infeções bacterianas","Salmonelas"],admin:"Água"},
+    "Salmacoli Zoopan":{emoji:"🧫",cat:"Salmonelas",
+      funcao:["Salmonelas","Colibaciloses"],admin:"Água"},
+    "Glucose + Vitamins Oropharma":{emoji:"⚡",cat:"Energia recuperação",
+      funcao:["Energia rápida","Pós-voo","Reidratação"],admin:"Água",dose:"2-5 col/L"},
+    "L-Carnitine Forte":{emoji:"🔥",cat:"Energia · Músculo",
+      funcao:["Converte gordura em energia","Resistência","Músculo"],admin:"Ração"},
+    "Energy Activator":{emoji:"⚡",cat:"Energia concursos",
+      funcao:["Energia para concursos","Resistência"],admin:"Ração"},
+    "Victory Taurine":{emoji:"🏆",cat:"Recuperação · Músculo",
+      funcao:["Recuperação","Resistência","Apoio muscular"],admin:"Água"},
+    "Pantasmoke":{emoji:"💨",cat:"Fumigação",
+      funcao:["Fumigação respiratória","Desinfeção pombal"],admin:"Fumigação"}
   },
+
   plano_criacao:{
-    objetivo:"Fertilidade, ovos de qualidade, leite de papo, crescimento dos borrachos",
-    "Segunda":{produto:"Herbolan",funcao:["Flora intestinal","Imunidade","Digestão"]},
-    "Terça":{produto:"Klaus AminoPrime",dose:"10 ml/L",funcao:["Aminoácidos","Cálcio","Fertilidade","Formação dos ovos"]},
-    "Quarta":{produtos:["Óleo de Girassol 5ml/kg ração","Levedura de Cerveja 10g/kg ração"],funcao:["Complexo B","Crescimento","Condição física"]},
-    "Quinta":{produto:"Água limpa"},
-    "Sexta":{produto:"Belgavet Balneo",dose:"2ml/L banho",funcao:["Limpeza plumagem","Relaxamento","Saúde das penas"]},
-    "Sábado":{produto:"Klaus AminoPrime",dose:"10 ml/L"},
-    "Domingo":{produto:"Água limpa"},
-    quando_necessario:["Bio-Sac Crómio (após tratamentos/stress)","Broncolis 1-2ml/L 3-5 dias","Optiprobios Zooresp 10-20ml/L 3-5 dias","Oxygen Plus 1 gota/narina","Vermizoo 2-3g/L 3-4x/ano","Talco para ninhos ao renovar"]
+    0:{dia:"Domingo",agua:"Água limpa",aguaDose:"",comida:"Ração 880g",nota:"Descanso · Recuperação"},
+    1:{dia:"Segunda",agua:"Água limpa",aguaDose:"",comida:"Herbolan na ração (880g)",nota:"Intestino · Flora · Imunidade"},
+    2:{dia:"Terça",agua:"Klaus AminoPrime",aguaDose:"20ml nos 2L",comida:"Ração 880g",nota:"Fertilidade · Cálcio · Formação dos ovos"},
+    3:{dia:"Quarta",agua:"Água limpa",aguaDose:"",comida:"Óleo Girassol 4,4ml + Levedura 8,8g na ração",nota:"Complexo B · Crescimento"},
+    4:{dia:"Quinta",agua:"Água limpa",aguaDose:"",comida:"Ração 880g",nota:"Descanso"},
+    5:{dia:"Sexta",agua:"Belgavet Balneo (BANHO)",aguaDose:"4ml nos 2L",comida:"Ração 880g",nota:"Plumagem · Minerais · Penas"},
+    6:{dia:"Sábado",agua:"Klaus AminoPrime",aguaDose:"20ml nos 2L",comida:"Ração 880g",nota:"Fertilidade · Cálcio"}
   },
   plano_borrachos:{
-    objetivo:"Crescimento, imunidade, estrutura óssea, desenvolvimento muscular",
-    "Segunda":{produto:"Herbolan",funcao:["Flora intestinal","Digestão","Imunidade"]},
-    "Terça":{produto:"Klaus AminoPrime",dose:"10 ml/L",funcao:["Crescimento ósseo","Desenvolvimento muscular"]},
-    "Quarta":{produtos:["Óleo de Girassol 5ml/kg ração","Levedura de Cerveja 10g/kg ração"],funcao:["Vitaminas B","Crescimento","Pena forte"]},
-    "Quinta":{produto:"Água limpa"},
-    "Sexta":{produto:"Belgavet Balneo",dose:"2ml/L banho",funcao:["Plumagem saudável"]},
-    "Sábado":{produto:"Bio-Sac Crómio",funcao:["Flora intestinal","Melhor absorção nutrientes"]},
-    "Domingo":{produto:"Água limpa"},
-    quando_necessario:["Glucose+Vitamins 2-5 col/L (pós doença/stress/transporte)","Broncolis 1-2ml/L (respiratório)","Optiprobios Zooresp 10-20ml/L 3-5 dias","Oxygen Plus 1 gota/narina","Vermizoo 2-3g/L (a partir da idade adequada, 3-4x/ano)","Talco para ninhos regular"]
-  },
-  esquema_semanal:{
-    "Segunda":"Chá + Pó Alcalino",
-    "Terça":"Klaus Aminoprime",
-    "Quarta":"Flagyl",
-    "Quinta":"Rovamycine / Optiresp",
-    "Sexta":"Energy Activator",
-    "Sábado":"Energy Activator",
-    "Domingo":"Água Limpa",
-    apoio:["Becozyme","Glicose","L-Carnitine Forte","Backs"]
+    0:{dia:"Domingo",agua:"Água limpa",aguaDose:"",comida:"Ração 990g",nota:"Descanso · Recuperação"},
+    1:{dia:"Segunda",agua:"Água limpa",aguaDose:"",comida:"Herbolan na ração (990g)",nota:"Intestino · Flora · Digestão"},
+    2:{dia:"Terça",agua:"Klaus AminoPrime",aguaDose:"20ml nos 2L",comida:"Ração 990g",nota:"Ossos · Musculatura · Crescimento"},
+    3:{dia:"Quarta",agua:"Água limpa",aguaDose:"",comida:"Óleo Girassol 5ml + Levedura 9,9g na ração",nota:"Vitaminas B · Pena forte"},
+    4:{dia:"Quinta",agua:"Água limpa",aguaDose:"",comida:"Ração 990g",nota:"Descanso"},
+    5:{dia:"Sexta",agua:"Belgavet Balneo (BANHO)",aguaDose:"4ml nos 2L",comida:"Ração 990g",nota:"Plumagem · Minerais · Saúde"},
+    6:{dia:"Sábado",agua:"Água limpa",aguaDose:"",comida:"Ração 990g + Bio-Sac Crómio",nota:"Flora intestinal · Absorção"}
   }
 };
+
+// ── LEMBRETE DO DIA na página Alimentação ──────────────────
+(function(){
+  const dia=new Date().getDay();
+  const nomes=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+  const c=POMBAL.plano_criacao[dia];
+  const b=POMBAL.plano_borrachos[dia];
+  const ld=document.getElementById('lembrete-dia');
+  if(ld) ld.textContent=nomes[dia];
+  const lc=document.getElementById('lembrete-criacao');
+  if(lc) lc.innerHTML=`<div style="font-size:11px;font-weight:600;color:var(--gold);margin-bottom:6px">🥚 Reprodutores (40 pombos)</div>
+    <div class="ir"><span class="ik">💧 Água</span><span class="iv">${c.agua}${c.aguaDose?' · '+c.aguaDose:''}</span></div>
+    <div class="ir"><span class="ik">🌾 Comida</span><span class="iv">${c.comida}</span></div>
+    <div class="ir"><span class="ik">📌 Foco</span><span class="iv" style="color:var(--t2)">${c.nota}</span></div>`;
+  const lb=document.getElementById('lembrete-borrachos');
+  if(lb) lb.innerHTML=`<div style="font-size:11px;font-weight:600;color:var(--gold);margin-bottom:6px">🐣 Borrachos (45 pombos)</div>
+    <div class="ir"><span class="ik">💧 Água</span><span class="iv">${b.agua}${b.aguaDose?' · '+b.aguaDose:''}</span></div>
+    <div class="ir"><span class="ik">🌾 Comida</span><span class="iv">${b.comida}</span></div>
+    <div class="ir"><span class="ik">📌 Foco</span><span class="iv" style="color:var(--t2)">${b.nota}</span></div>`;
+})();
+
+// ── PÁGINA DE PRODUTOS ──────────────────────────────────────
+(function(){
+  const cats={
+    "Suplementos":["Klaus AminoPrime","Oropharma Herbolan","Levedura Cerveja Zoopan","Óleo Girassol","Bio-Sac Crómio","Vitamino L","Becozyme","L-Carnitine Forte","Energy Activator","Victory Taurine"],
+    "Energia & Recuperação":["Glucose + Vitamins"],
+    "Respiratório":["Broncolis","Zooresp Optiprobios","Rovamycine","Oxygen Plus","Pantasmoke"],
+    "Tricomonas":["HexaPlus","Flagyl"],
+    "Antibióticos":["Baytril","Bactrim","Salmacoli Zoopan"],
+    "Antiparasitário":["Vermizoo"],
+    "Proteção Viral":["Geledor 7-em-1"],
+    "Higiene & Banho":["Belgavet Balneo BVP","Pó de Talco"]
+  };
+  const el=document.getElementById('produtos-lista');
+  if(!el) return;
+  let html='';
+  for(const [cat,prods] of Object.entries(cats)){
+    html+=`<div class="ic" style="margin-top:10px"><div class="ictitle">${cat}</div>`;
+    for(const nome of prods){
+      const p=POMBAL.produtos[nome];
+      if(!p) continue;
+      html+=`<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:18px">${p.emoji||'💊'}</span>
+          <span style="font-size:13px;font-weight:600;color:var(--t1)">${nome}</span>
+          <span style="font-size:10px;color:var(--t3);flex:1">${p.cat}</span>
+        </div>`;
+      if(p.dose_2L) html+=`<div style="font-size:12px;color:#53bdeb;margin-bottom:3px">💊 Dose: ${p.dose_2L}</div>`;
+      else if(p.dose) html+=`<div style="font-size:12px;color:#53bdeb;margin-bottom:3px">💊 Dose: ${p.dose}</div>`;
+      else if(p.dose_litro) html+=`<div style="font-size:12px;color:#53bdeb;margin-bottom:3px">💊 Dose: ${p.dose_litro}</div>`;
+      if(p.dose_reprodutores) html+=`<div style="font-size:11px;color:var(--gold)">🥚 Reprodutores: ${p.dose_reprodutores} &nbsp; 🐣 Borrachos: ${p.dose_borrachos}</div>`;
+      if(p.funcao) html+=`<div style="font-size:11px;color:var(--t2);margin-top:3px">${p.funcao.slice(0,3).join(' · ')}</div>`;
+      if(p.onde) html+=`<div style="font-size:10px;color:var(--t3);margin-top:3px">🛒 ${p.onde}</div>`;
+      html+='</div>';
+    }
+    html+='</div>';
+  }
+  el.innerHTML=html;
+})();
+
+// ── NAVEGAÇÃO ───────────────────────────────────────────────
+const PAGES=['pg-home','pg-pombais','pg-entradas','pg-alim','pg-produtos','pg-tempo','pg-chat'];
+let cur=0;
+function nav(id,idx){
+  document.getElementById(PAGES[cur]).classList.remove('on');
+  document.getElementById(id).classList.add('on');
+  cur=idx;
+  document.querySelectorAll('.ni').forEach((n,i)=>n.classList.toggle('on',i===idx));
+  if(id==='pg-tempo') carregarPrevisao();
+}
+
+// ── CHATBOT ─────────────────────────────────────────────────
 const hist=[];let busy=false;
-async function getTempoAtual(){
-  try{
-    const [r1,r2]=await Promise.all([
-      fetch(`https://api.openweathermap.org/data/2.5/weather?q=Pacos+de+Ferreira,PT&appid=0cb38a58272637559fef238e6bbc0bd9&units=metric&lang=pt`),
-      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=Pacos+de+Ferreira,PT&appid=0cb38a58272637559fef238e6bbc0bd9&units=metric&lang=pt&cnt=8`)
-    ]);
-    const atual=await r1.json();
-    const prev=await r2.json();
-    const dirs=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
-    const dv=dirs[Math.round((atual.wind.deg||0)/22.5)%16];
-    const linhas=prev.list.map(i=>{
-      const h=i.dt_txt.split(' ')[1].substring(0,5);
-      const ch=i.rain?`chuva ${Math.round((i.rain['3h']||0)*10)/10}mm`:'sem chuva';
-      return `${h}: ${Math.round(i.main.temp)}°C, ${i.weather[0].description}, vento ${Math.round(i.wind.speed*3.6)}km/h, ${ch}`;
-    }).join('\n');
-    return `METEOROLOGIA ATUAL - PAÇOS DE FERREIRA:\nTemp: ${Math.round(atual.main.temp)}°C (sensação ${Math.round(atual.main.feels_like)}°C)\nDesc: ${atual.weather[0].description}\nHumidade: ${atual.main.humidity}%\nVento: ${Math.round((atual.wind.speed||0)*3.6)}km/h direção ${dv}\nPressão: ${atual.main.pressure}hPa\nMáx/Mín: ${Math.round(atual.main.temp_max)}°/${Math.round(atual.main.temp_min)}°\n\nPREVISÃO PRÓXIMAS 24H:\n${linhas}`;
-  }catch(e){return 'Dados meteorológicos indisponíveis.';}
+
+function findProduto(q){
+  for(const [nome,p] of Object.entries(POMBAL.produtos)){
+    if(nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(q)) return {nome,p};
+  }
+  return null;
+}
+
+function formatProduto(nome,p){
+  let r=`${p.emoji||'💊'} ${nome}\nCategoria: ${p.cat}`;
+  if(p.funcao) r+=`\nFunção: ${p.funcao.join(', ')}`;
+  if(p.admin) r+=`\nAdministração: ${p.admin}`;
+  if(p.dose_2L) r+=`\nDose (2L): ${p.dose_2L}`;
+  else if(p.dose) r+=`\nDose: ${p.dose}`;
+  else if(p.dose_litro) r+=`\nDose: ${p.dose_litro}`;
+  if(p.dose_2L_normal) r+=`\nDose normal (2L): ${p.dose_2L_normal}`;
+  if(p.dose_2L_reforco) r+=`\nDose reforço (2L): ${p.dose_2L_reforco}`;
+  if(p.dose_reprodutores) r+=`\n🥚 Reprodutores: ${p.dose_reprodutores}`;
+  if(p.dose_borrachos) r+=`\n🐣 Borrachos: ${p.dose_borrachos}`;
+  if(p.dose_preventiva) r+=`\nDose preventiva: ${p.dose_preventiva}`;
+  if(p.dose_tratamento) r+=`\nDose tratamento: ${p.dose_tratamento}`;
+  if(p.dose_prev_2L) r+=`\nPreventiva (2L): ${p.dose_prev_2L}`;
+  if(p.dose_trat_2L) r+=`\nTratamento (2L): ${p.dose_trat_2L}`;
+  if(p.duracao) r+=`\nDuração: ${p.duracao}`;
+  if(p.nota) r+=`\nNota: ${p.nota}`;
+  if(p.onde) r+=`\n🛒 Onde comprar: ${p.onde}`;
+  if(p.preco) r+=`\n💶 Preço: ${p.preco}`;
+  return r;
 }
 
 function responderOffline(msg){
   const q=msg.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const dia=new Date().getDay();
+  const nomes=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
 
-  // Encontrar produto por nome
-  function findProduto(nome){
-    const cats=Object.values(POMBAL.produtos);
-    for(const cat of cats){
-      for(const p of cat){
-        if(p.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(nome)) return p;
-      }
-    }
-    return null;
+  // LEMBRETE DO DIA
+  if(q.includes('lembrete') || q.includes('hoje') || q.includes('agora') || q.includes('o que dar')){
+    const c=POMBAL.plano_criacao[dia];
+    const b=POMBAL.plano_borrachos[dia];
+    return `📅 Hoje é ${nomes[dia]}\n\n🥚 REPRODUTORES (40 pombos)\n💧 Água: ${c.agua}${c.aguaDose?' → '+c.aguaDose:''}\n🌾 Comida: ${c.comida}\n📌 ${c.nota}\n\n🐣 BORRACHOS (45 pombos)\n💧 Água: ${b.agua}${b.aguaDose?' → '+b.aguaDose:''}\n🌾 Comida: ${b.comida}\n📌 ${b.nota}`;
   }
 
-  function formatProduto(p){
-    let r=`✅ ${p.nome}`;
-    if(p.cat) r+=`\nCategoria: ${p.cat}`;
-    if(p.funcao) r+=`\nFunção: ${p.funcao.join(', ')}`;
-    if(p.admin) r+=`\nAdministração: ${p.admin}`;
-    if(p.dose) r+=`\nDose: ${p.dose}`;
-    if(p.dose_normal) r+=`\nDose normal: ${p.dose_normal}`;
-    if(p.dose_reforco) r+=`\nDose reforço: ${p.dose_reforco}`;
-    if(p.dose_preventiva) r+=`\nDose preventiva: ${p.dose_preventiva}`;
-    if(p.dose_tratamento) r+=`\nDose tratamento: ${p.dose_tratamento}`;
-    if(p.admin_agua) r+=`\nÁgua: ${p.admin_agua}`;
-    if(p.admin_racao) r+=`\nRação: ${p.admin_racao}`;
-    if(p.duracao) r+=`\nDuração: ${p.duracao}`;
-    if(p.subst) r+=`\nSubstância ativa: ${p.subst}`;
-    return r;
-  }
-
-  // PLANO DE CRIAÇÃO
-  if(q.includes('plano de criacao') || q.includes('plano criacao') || (q.includes('criacao') && q.includes('plano'))){
+  // PLANO CRIAÇÃO
+  if((q.includes('plano') && q.includes('criacao')) || (q.includes('criacao') && q.includes('semana'))){
     const pc=POMBAL.plano_criacao;
-    return `🥚 Plano de Criação\nObjetivo: ${pc.objetivo}\n\nSeg: ${pc['Segunda'].produto}\nTer: ${pc['Terça'].produto} (${pc['Terça'].dose})\nQua: ${pc['Quarta'].produtos.join(' + ')}\nQui: Água limpa\nSex: ${pc['Sexta'].produto} (${pc['Sexta'].dose})\nSáb: ${pc['Sábado'].produto} (${pc['Sábado'].dose})\nDom: Água limpa\n\nQuando necessário:\n${pc.quando_necessario.join('\n')}`;
+    return `🥚 Plano de Criação (Reprodutores · 40 pombos)\n\nSeg: Herbolan na ração\nTer: Klaus AminoPrime → 20ml nos 2L\nQua: Óleo 4,4ml + Levedura 8,8g na ração\nQui: Água limpa\nSex: Belgavet Balneo (banho) → 4ml nos 2L\nSáb: Klaus AminoPrime → 20ml nos 2L\nDom: Água limpa`;
   }
 
   // PLANO BORRACHOS
-  if(q.includes('plano') && (q.includes('borracho') || q.includes('borrach'))){
-    const pb=POMBAL.plano_borrachos;
-    return `🐣 Plano de Borrachos\nObjetivo: ${pb.objetivo}\n\nSeg: ${pb['Segunda'].produto}\nTer: ${pb['Terça'].produto} (${pb['Terça'].dose})\nQua: ${pb['Quarta'].produtos.join(' + ')}\nQui: Água limpa\nSex: ${pb['Sexta'].produto} (${pb['Sexta'].dose})\nSáb: ${pb['Sábado'].produto}\nDom: Água limpa\n\nQuando necessário:\n${pb.quando_necessario.join('\n')}`;
-  }
-
-  // ESQUEMA SEMANAL CONCURSOS
-  if(q.includes('esquema') || (q.includes('semana') && q.includes('concurso'))){
-    const es=POMBAL.esquema_semanal;
-    return `📅 Esquema Semanal Concursos\nSeg: ${es['Segunda']}\nTer: ${es['Terça']}\nQua: ${es['Quarta']}\nQui: ${es['Quinta']}\nSex: ${es['Sexta']}\nSáb: ${es['Sábado']}\nDom: ${es['Domingo']}\n\nApoio: ${es.apoio.join(', ')}`;
+  if((q.includes('plano') && q.includes('borracho')) || (q.includes('borracho') && q.includes('semana'))){
+    return `🐣 Plano de Borrachos (45 pombos)\n\nSeg: Herbolan na ração\nTer: Klaus AminoPrime → 20ml nos 2L\nQua: Óleo 5ml + Levedura 9,9g na ração\nQui: Água limpa\nSex: Belgavet Balneo (banho) → 4ml nos 2L\nSáb: Bio-Sac Crómio na ração\nDom: Água limpa`;
   }
 
   // DIA ESPECÍFICO
-  const dias=['segunda','terca','quarta','quinta','sexta','sabado','domingo'];
-  const diasReal=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
-  for(let i=0;i<dias.length;i++){
-    if(q.includes(dias[i])){
-      const pc=POMBAL.plano_criacao[diasReal[i]];
-      const pb=POMBAL.plano_borrachos[diasReal[i]];
-      let r=`📅 ${diasReal[i]}:\n`;
-      if(pc) r+=`Criação: ${pc.produto||pc.produtos?.join('+')||'Água limpa'}\n`;
-      if(pb) r+=`Borrachos: ${pb.produto||pb.produtos?.join('+')||'Água limpa'}`;
-      return r;
+  const diasN=['domingo','segunda','terca','quarta','quinta','sexta','sabado'];
+  for(let i=0;i<diasN.length;i++){
+    if(q.includes(diasN[i])){
+      const c=POMBAL.plano_criacao[i];
+      const b=POMBAL.plano_borrachos[i];
+      return `📅 ${nomes[i]}\n\n🥚 Reprodutores:\n💧 ${c.agua}${c.aguaDose?' → '+c.aguaDose:''}\n🌾 ${c.comida}\n\n🐣 Borrachos:\n💧 ${b.agua}${b.aguaDose?' → '+b.aguaDose:''}\n🌾 ${b.comida}`;
     }
   }
 
   // BANHO
-  if(q.includes('banho')){
-    const p=findProduto('belgavet');
-    return p ? formatProduto(p) : '🛁 Para o banho: Belgavet Balneo — 2 ml por litro de água de banho.\nFunção: limpeza da plumagem, relaxamento muscular, saúde das penas.';
+  if(q.includes('banho') || q.includes('belgavet')){
+    const r=findProduto('belgavet');
+    return r ? formatProduto(r.nome,r.p) : '🛁 Belgavet Balneo: 4ml nos 2L de água de banho. Sexta-feira. Não é para beber!';
   }
 
   // TRICOMONAS
@@ -709,88 +746,46 @@ function responderOffline(msg){
     const h=findProduto('hexaplus');
     const f=findProduto('flagyl');
     const o=findProduto('oxygen');
-    return `🦠 Produtos para Tricomonas:\n\n${formatProduto(h)}\n\n${formatProduto(f)}\n\n${formatProduto(o)}`;
+    return `🦠 Produtos para Tricomonas:\n\n${formatProduto(h.nome,h.p)}\n\n${formatProduto(f.nome,f.p)}\n\n${formatProduto(o.nome,o.p)}`;
   }
 
   // RESPIRATÓRIO
-  if(q.includes('respirat') || q.includes('broncolis') || q.includes('pulmao') || q.includes('tosse') || q.includes('catarro') || q.includes('muco')){
-    const prods=POMBAL.produtos.respiratorio.map(p=>formatProduto(p)).join('\n\n');
-    return `🫁 Produtos Respiratórios:\n\n${prods}`;
+  if(q.includes('respirat') || q.includes('broncolis') || q.includes('tosse') || q.includes('muco') || q.includes('pulmao')){
+    const resp=['Broncolis','Zooresp Optiprobios','Rovamycine','Oxygen Plus'];
+    return `🫁 Produtos Respiratórios:\n\n`+resp.map(n=>{const r=findProduto(n.toLowerCase().split(' ')[0]);return r?formatProduto(r.nome,r.p):''}).filter(Boolean).join('\n\n');
+  }
+
+  // RECUPERAÇÃO PÓS-VOO
+  if(q.includes('recuper') || q.includes('pos-voo') || q.includes('chegada') || q.includes('concurso')){
+    return `🏆 Recuperação Pós-Voo\n\nDia da chegada:\n💧 Água: Glucose+Vitamins → 4-10 colheres nos 2L\n🌾 Ração: Óleo + Levedura + Herbolan\n\nDia seguinte:\n💧 Água limpa\n🌾 Ração: Bio-Sac Crómio + Óleo\n\nSe respiratório:\n💧 Broncolis 2-4ml nos 2L · 3-5 dias\n\nSe vermes (preventivo):\n💧 Vermizoo 4-6g nos 2L`;
   }
 
   // VERMES
   if(q.includes('verme') || q.includes('vermizoo') || q.includes('parasit') || q.includes('levamisol')){
-    const p=findProduto('vermizoo');
-    return p ? formatProduto(p) : '';
-  }
-
-  // SALMONELAS / BACTÉRIAS
-  if(q.includes('salmonel') || q.includes('bacteria') || q.includes('bacter') || q.includes('bactrim') || q.includes('baytril') || q.includes('genellar') || q.includes('salmacoli')){
-    const prods=POMBAL.produtos.bacterias.map(p=>formatProduto(p)).join('\n\n');
-    return `🧫 Antibacterianos / Salmonelas:\n\n${prods}`;
-  }
-
-  // ENERGIA
-  if(q.includes('energia') || q.includes('glucose') || q.includes('glicose') || q.includes('carnitin') || q.includes('activator')){
-    const prods=POMBAL.produtos.energia.map(p=>formatProduto(p)).join('\n\n');
-    return `⚡ Produtos de Energia:\n\n${prods}`;
-  }
-
-  // VITAMINAS
-  if(q.includes('vitamin') || q.includes('vitamino') || q.includes('becozyme') || q.includes('protovit')){
-    const prods=POMBAL.produtos.vitaminas.map(p=>formatProduto(p)).join('\n\n');
-    return `💊 Vitaminas:\n\n${prods}`;
-  }
-
-  // PROBIÓTICOS / DIGESTÃO / INTESTINO
-  if(q.includes('probiot') || q.includes('intestin') || q.includes('digest') || q.includes('flora') || q.includes('herbolan') || q.includes('levedura') || q.includes('bio-sac') || q.includes('bio sac')){
-    const prods=POMBAL.produtos.probioticos.map(p=>formatProduto(p)).join('\n\n');
-    return `🌿 Probióticos / Digestão:\n\n${prods}`;
-  }
-
-  // AMINOÁCIDOS / KLAUS
-  if(q.includes('aminoacid') || q.includes('aminoprime') || q.includes('klaus') || q.includes('calcio')){
-    const p=findProduto('klaus');
-    return p ? formatProduto(p) : '';
-  }
-
-  // ÓLEO DE GIRASSOL
-  if(q.includes('oleo') || q.includes('girassol')){
-    const p=findProduto('girassol');
-    return p ? formatProduto(p) : '';
-  }
-
-  // HIGIENE / TALCO / NINHOS
-  if(q.includes('talco') || q.includes('ninho') || q.includes('higiene')){
-    const prods=POMBAL.produtos.higiene.map(p=>formatProduto(p)).join('\n\n');
-    return `🧹 Higiene:\n\n${prods}`;
-  }
-
-  // PRODUTO ESPECÍFICO por nome
-  const nomeProdutos=['herbolan','vitamino','becozyme','protovit','aminoprime','bio-sac','biosac','levedura','optidigest','glucose','glicose','energy activator','carnitine','hexaplus','flagyl','oxygen','broncolis','optiprobios','rovamycine','optiresp','eucalipto','pantasmoke','vermizoo','bactrim','baytril','genellar','salmacoli','victory','geledor','belgavet','talco','girassol'];
-  for(const n of nomeProdutos){
-    if(q.includes(n)){
-      const p=findProduto(n.replace('-',''));
-      if(p) return formatProduto(p);
-    }
+    const r=findProduto('vermizoo');
+    return r ? formatProduto(r.nome,r.p) : '';
   }
 
   // TODOS OS PRODUTOS
-  if(q.includes('produto') || q.includes('tenho') || q.includes('lista') || q.includes('o que tens')){
-    return `📦 Produtos disponíveis:\n\nVITAMINAS: ${POMBAL.produtos.vitaminas.map(p=>p.nome).join(', ')}\n\nAMINOÁCIDOS: ${POMBAL.produtos.aminoacidos.map(p=>p.nome).join(', ')}\n\nPROBIÓTICOS: ${POMBAL.produtos.probioticos.map(p=>p.nome).join(', ')}\n\nENERGIA: ${POMBAL.produtos.energia.map(p=>p.nome).join(', ')}\n\nTRICOMONAS: ${POMBAL.produtos.tricomonas.map(p=>p.nome).join(', ')}\n\nRESPIRATÓRIO: ${POMBAL.produtos.respiratorio.map(p=>p.nome).join(', ')}\n\nVERMES: ${POMBAL.produtos.vermes.map(p=>p.nome).join(', ')}\n\nBACTÉRIAS: ${POMBAL.produtos.bacterias.map(p=>p.nome).join(', ')}\n\nHIGIENE: ${POMBAL.produtos.higiene.map(p=>p.nome).join(', ')}`;
+  if(q.includes('produto') || q.includes('lista') || q.includes('o que tens') || q.includes('tenho')){
+    return `📦 Todos os produtos:\n\nSUPLEMENTOS: Klaus AminoPrime, Herbolan, Levedura Cerveja, Óleo Girassol, Bio-Sac Crómio, Vitamino L, L-Carnitine Forte\n\nENERGIA: Glucose+Vitamins, Energy Activator, Victory Taurine\n\nRESPIRATÓRIO: Broncolis, Zooresp, Rovamycine, Oxygen Plus, Pantasmoke\n\nTRICOMONAS: HexaPlus, Flagyl\n\nANTIBIÓTICOS: Baytril, Bactrim, Salmacoli Zoopan\n\nANTIPARASITÁRIO: Vermizoo\n\nPROTEÇÃO VIRAL: Geledor 7-em-1\n\nHIGIENE: Belgavet Balneo, Pó de Talco`;
+  }
+
+  // PRODUTO ESPECÍFICO
+  const pesquisa=['klaus','aminoprime','herbolan','belgavet','balneo','glucose','levedura','cerveja','girassol','oleo','bio-sac','biosac','broncolis','zooresp','optiprobios','vermizoo','geledor','hexaplus','flagyl','oxygen','vitamino','becozyme','rovamycine','baytril','bactrim','salmacoli','talco','pantasmoke','victory','carnitine','energy'];
+  for(const t of pesquisa){
+    if(q.includes(t)){
+      const r=findProduto(t.replace('-',''));
+      if(r) return formatProduto(r.nome,r.p);
+    }
   }
 
   // RAÇÃO
-  if(q.includes('racao') || q.includes('ração')){
-    return '🌾 Ração: Asas D\'Ouro Premium / Columbofauna Criação Extra (mesmo produto, frente e verso do saco).\nMilho Inteiro: Cereais Ovargado.';
+  if(q.includes('racao') || q.includes('racao') || q.includes('ração')){
+    return `🌾 Ração: Asas D'Ouro Premium (frente) = Columbofauna Criação Extra (verso) — mesmo produto.\n\nReprodutores: 40 pombos × 22g = 880g/dia\nBorrachos: 45 pombos × 22g = 990g/dia\n\nMarca: Irmãos Sousa · Validade: 03-09-2026`;
   }
 
-  // TEMPO / METEOROLOGIA
-  if(q.includes('tempo') || q.includes('meteor') || q.includes('chuva') || q.includes('vento') || q.includes('temperatura')){
-    return '🌤 Abre o separador Tempo para a previsão em tempo real de Paços de Ferreira.';
-  }
-
-  return `Podes perguntar sobre:\n• Produtos e doses (ex: "dose do Herbolan")\n• Plano de criação / borrachos\n• Tricomonas, respiratório, vermes, bactérias\n• Banho, higiene, energia, vitaminas\n• Esquema semanal de concursos`;
+  return `Podes perguntar sobre:\n• Lembrete de hoje (água e comida)\n• Plano de criação / borrachos\n• Produto específico (ex: "dose do Klaus")\n• Recuperação pós-voo\n• Tricomonas, respiratório, vermes\n• Todos os produtos`;
 }
 
 async function sendMsg(txt){
@@ -798,21 +793,16 @@ async function sendMsg(txt){
   const inp=document.getElementById('inp');
   const msg=(txt||inp.value).trim();
   if(!msg)return;
-
   document.getElementById('welcome')?.remove();
-  inp.value=''; rsz(inp);
+  inp.value='';rsz(inp);
   addmsg('u',msg);
-
   busy=true;
   document.getElementById('sb').disabled=true;
-
   const t=typing();
-  await new Promise(r=>setTimeout(r,400));
-
+  await new Promise(r=>setTimeout(r,350));
   const reply=responderOffline(msg);
   t.remove();
-  addmsg('a', reply);
-
+  addmsg('a',reply);
   busy=false;
   document.getElementById('sb').disabled=false;
 }
@@ -827,26 +817,20 @@ function typing(){
   d.className='msg a';d.innerHTML='<div class="mav">🕊️</div><div class="bub"><div class="tdots"><span></span><span></span><span></span></div></div>';
   c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
 }
-function csend(el){nav('pg-chat',5);setTimeout(()=>sendMsg(el.textContent),100);}
+function csend(el){nav('pg-chat',6);setTimeout(()=>sendMsg(el.textContent),100);}
 function onK(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function rsz(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,80)+'px';}
 
-// ===== TEMPO =====
+// ── TEMPO ────────────────────────────────────────────────────
 const OWM_KEY='0cb38a58272637559fef238e6bbc0bd9';
 const CIDADE='Pacos de Ferreira,PT';
-
-const ICONS={
-  '01d':'☀️','01n':'🌙','02d':'⛅','02n':'⛅',
-  '03d':'☁️','03n':'☁️','04d':'☁️','04n':'☁️',
-  '09d':'🌧️','09n':'🌧️','10d':'🌦️','10n':'🌦️',
-  '11d':'⛈️','11n':'⛈️','13d':'❄️','13n':'❄️','50d':'🌫️','50n':'🌫️'
-};
+const ICONS={'01d':'☀️','01n':'🌙','02d':'⛅','02n':'⛅','03d':'☁️','03n':'☁️','04d':'☁️','04n':'☁️','09d':'🌧️','09n':'🌧️','10d':'🌦️','10n':'🌦️','11d':'⛈️','11n':'⛈️','13d':'❄️','13n':'❄️','50d':'🌫️','50n':'🌫️'};
 
 async function carregarTempo(){
   try{
     const r=await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(CIDADE)}&appid=${OWM_KEY}&units=metric&lang=pt`);
     const d=await r.json();
-    if(d.cod!==200){console.log('OWM erro:',d);return;}
+    if(d.cod!==200)return;
     const ico=ICONS[d.weather[0].icon]||'🌡️';
     document.getElementById('w-icon').textContent=ico;
     document.getElementById('w-temp').textContent=Math.round(d.main.temp)+'°';
@@ -854,37 +838,26 @@ async function carregarTempo(){
     document.getElementById('w-humidity').textContent=d.main.humidity+'%';
     document.getElementById('w-wind').textContent=Math.round(d.wind.speed*3.6)+' km/h';
     document.getElementById('w-minmax').textContent=Math.round(d.main.temp_max)+'°/'+Math.round(d.main.temp_min)+'°';
-  }catch(e){console.log('Tempo erro:',e);}
+  }catch(e){}
 }
 
 async function carregarPrevisao(){
   const el=document.getElementById('tempo-content');
   try{
-    // Tempo atual
     const r1=await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(CIDADE)}&appid=${OWM_KEY}&units=metric&lang=pt`);
     const atual=await r1.json();
-    // Previsão 5 dias
     const r2=await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(CIDADE)}&appid=${OWM_KEY}&units=metric&lang=pt&cnt=40`);
     const prev=await r2.json();
-
-    // Agrupar por dia
     const dias={};
     prev.list.forEach(item=>{
       const data=item.dt_txt.split(' ')[0];
       if(!dias[data])dias[data]={temps:[],desc:'',icon:'',wind:[]};
       dias[data].temps.push(item.main.temp);
       dias[data].wind.push(item.wind.speed*3.6);
-      if(item.dt_txt.includes('12:00')){
-        dias[data].desc=item.weather[0].description;
-        dias[data].icon=ICONS[item.weather[0].icon]||'🌡️';
-      }
+      if(item.dt_txt.includes('12:00')){dias[data].desc=item.weather[0].description;dias[data].icon=ICONS[item.weather[0].icon]||'🌡️';}
     });
-
-    const hoje=new Date();
     const nomes=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-
-    let html=`
-    <div style="background:var(--card);border:1px solid var(--brd);border-radius:18px;padding:16px;margin-bottom:10px">
+    let html=`<div style="background:var(--card);border:1px solid var(--brd);border-radius:18px;padding:16px;margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:14px">
         <div style="font-size:52px">${ICONS[atual.weather[0].icon]||'🌡️'}</div>
         <div>
@@ -902,7 +875,6 @@ async function carregarPrevisao(){
     </div>
     <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;padding:4px 0 10px">Próximos 5 dias</div>
     <div style="background:var(--card);border:1px solid var(--brd);border-radius:18px;overflow:hidden">`;
-
     Object.entries(dias).slice(0,5).forEach(([data,info],i)=>{
       const d=new Date(data+'T12:00:00');
       const nome=i===0?'Hoje':i===1?'Amanhã':nomes[d.getDay()];
@@ -917,21 +889,12 @@ async function carregarPrevisao(){
         <div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700">${max}°<span style="color:var(--t2);font-size:12px">/${min}°</span></div>
       </div>`;
     });
-
     html+='</div><div style="height:16px"></div>';
     el.innerHTML=html;
-
-  }catch(e){el.innerHTML='<div style="color:var(--t2);text-align:center;padding:40px">Erro ao carregar tempo. Tenta novamente.</div>';}
+  }catch(e){el.innerHTML='<div style="color:var(--t2);text-align:center;padding:40px">Erro ao carregar. Tenta novamente.</div>';}
 }
 
-// Carregar tempo ao iniciar
 carregarTempo();
-// Carregar previsão quando abrir a página do tempo
-const origNav=nav;
-nav=function(id,idx){
-  origNav(id,idx);
-  if(id==='pg-tempo') carregarPrevisao();
-};
 </script>
 </body>
 </html>
