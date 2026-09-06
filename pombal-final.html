@@ -118,9 +118,23 @@ nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid
 .chatbot{flex-shrink:0}
 .chips{padding:6px 12px;display:flex;flex-wrap:wrap;gap:6px;}
 .chip{background:var(--card);border:1px solid var(--brd);color:var(--t2);border-radius:20px;padding:6px 14px;font-size:11px;white-space:nowrap;cursor:pointer;flex-shrink:0;transition:all .15s}
+/* Painel lateral de sugestões */
+.topics-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.topics-overlay.on{opacity:1;pointer-events:auto}
+.topics-panel{position:fixed;top:0;left:0;bottom:0;width:78%;max-width:280px;background:var(--card);border-right:1px solid var(--brd);z-index:41;transform:translateX(-100%);transition:transform .25s ease;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+.topics-panel.on{transform:translateX(0)}
+.topics-hd{padding:16px 16px 10px;font-weight:700;font-size:15px;color:var(--gold);border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center}
+.topics-hd span{cursor:pointer;font-size:18px;color:var(--t2)}
+.topics-list{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.topic-item{background:var(--card2,rgba(255,255,255,.04));border:1px solid var(--brd);color:var(--t1);border-radius:12px;padding:11px 14px;font-size:13px;cursor:pointer;text-align:left}
+.topic-item:active{opacity:.7}
+.topics-fab{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--brd);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;flex-shrink:0}
+.mic-btn{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--brd);color:var(--t1);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;flex-shrink:0;transition:all .15s}
+.mic-btn.listening{background:#d9705a;border-color:#d9705a;color:#fff;animation:micpulse 1s infinite}
+@keyframes micpulse{0%,100%{opacity:1}50%{opacity:.55}}
 .chip:hover,.chip:active{background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.35);color:var(--gold)}
-.cin{background:rgba(9,9,15,.98);border-top:1px solid var(--brd);padding:8px 12px;display:flex;gap:8px;align-items:flex-end;padding-bottom:max(8px,env(safe-area-inset-bottom))}
-.cinw{flex:1;background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:10px 16px;display:flex;align-items:flex-end;transition:border-color .2s}
+.cin{background:rgba(9,9,15,.98);border-top:1px solid var(--brd);padding:8px 12px;display:flex;gap:6px;align-items:center;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+.cinw{flex:1;min-width:0;background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:9px 16px;display:flex;align-items:center;transition:border-color .2s}
 .cinw:focus-within{border-color:rgba(212,168,67,.4)}
 textarea{flex:1;background:none;border:none;outline:none;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.4;resize:none;max-height:80px;min-height:18px}
 textarea::placeholder{color:var(--t3)}
@@ -413,7 +427,7 @@ textarea::placeholder{color:var(--t3)}
     <div class="phico" style="background:radial-gradient(circle,rgba(140,100,255,.3),rgba(80,40,180,.15));border:1px solid rgba(124,92,240,.25)">🧠</div>
     <div>
       <div class="phtitle">IA Assistente</div>
-      <div class="phsub" style="display:flex;align-items:center;gap:5px"><div class="gdot"></div> Pombal IA V14 · Base completa · Doses calculadas</div>
+      <div class="phsub" style="display:flex;align-items:center;gap:5px"><div class="gdot"></div> Pombal IA V14 · Produtos, doses e saúde (doenças + artigos)</div>
     </div>
   </div>
   <div class="chatmsgs" id="msgs">
@@ -424,25 +438,36 @@ textarea::placeholder{color:var(--t3)}
     </div>
   </div>
   <div class="chatbot">
-    <div class="chips">
-      <div class="chip" onclick="csend(this)">Que ração uso?</div>
-      <div class="chip" onclick="csend(this)">Plano de criação</div>
-      <div class="chip" onclick="csend(this)">Plano dos borrachos</div>
-      <div class="chip" onclick="csend(this)">Dose do Klaus hoje</div>
-      <div class="chip" onclick="csend(this)">Produtos para respiratório</div>
-      <div class="chip" onclick="csend(this)">Tenho algo para tricomonas?</div>
-      <div class="chip" onclick="csend(this)">Lembrete de hoje</div>
-      <div class="chip" onclick="csend(this)">Que produtos tenho?</div>
-      <div class="chip" onclick="csend(this)">Dose do Belgavet banho</div>
-      <div class="chip" onclick="csend(this)">Recuperação pós-voo</div>
-    </div>
     <div class="cin">
+      <div class="topics-fab" onclick="toggleTopics(true)">💡</div>
       <div class="cinw">
         <textarea id="inp" placeholder="Pergunta sobre o teu pombal..." rows="1"
           onkeydown="onK(event)" oninput="rsz(this)"></textarea>
       </div>
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
       <button class="sbtn" id="sb" onclick="sendMsg()">➤</button>
     </div>
+  </div>
+</div>
+
+<div class="topics-overlay" id="topicsOverlay" onclick="toggleTopics(false)"></div>
+<div class="topics-panel" id="topicsPanel">
+  <div class="topics-hd">💡 Perguntas rápidas<span onclick="toggleTopics(false)">✕</span></div>
+  <div class="topics-list">
+    <div class="topic-item" onclick="topicSend(this)">Que ração uso?</div>
+    <div class="topic-item" onclick="topicSend(this)">Plano de criação</div>
+    <div class="topic-item" onclick="topicSend(this)">Plano dos borrachos</div>
+    <div class="topic-item" onclick="topicSend(this)">Dose do Klaus hoje</div>
+    <div class="topic-item" onclick="topicSend(this)">Produtos para respiratório</div>
+    <div class="topic-item" onclick="topicSend(this)">Tenho algo para tricomonas?</div>
+    <div class="topic-item" onclick="topicSend(this)">Lembrete de hoje</div>
+    <div class="topic-item" onclick="topicSend(this)">Que produtos tenho?</div>
+    <div class="topic-item" onclick="topicSend(this)">Dose do Belgavet banho</div>
+    <div class="topic-item" onclick="topicSend(this)">Recuperação pós-voo</div>
+    <div class="topic-item" onclick="topicSend(this)">Sintomas de coccidiose</div>
+    <div class="topic-item" onclick="topicSend(this)">Pombo com diarreia</div>
+    <div class="topic-item" onclick="topicSend(this)">O que é paramixovirose?</div>
+    <div class="topic-item" onclick="topicSend(this)">Penas roídas, piolhos?</div>
   </div>
 </div>
 
@@ -670,6 +695,207 @@ function nav(id,idx){
   if(id==='pg-tempo') carregarPrevisao();
 }
 
+// ── BASE DE SAÚDE — DOENÇAS E ARTIGOS ────────────────────────
+const DOENCAS={
+  ornitose:{emoji:"🫁",nome:"Ornitose (Ornithosis Complex)",tipo:"Bacteriana",
+    causa:"Chlamydia psittaci, micoplasmas e outras bactérias respiratórias. Associada a más condições de ventilação e sobrelotação.",
+    sintomas:["Espirros e ligeira dificuldade respiratória","Olhos húmidos ou inchados, por vezes com espuma","Narinas sujas ou com crosta","Quebra de rendimento sem sintomas óbvios","Casos graves: respiração ofegante e voz rouca"],
+    tratamento:"Antibióticos específicos (doxiciclina ou tilosina). Protocolo típico: 2 semanas antes da época e depois 2 dias/semana durante a competição.",
+    prevencao:"Ventilação adequada sem correntes de ar diretas, higiene rigorosa dos bebedouros, evitar sobrelotação.",
+    semelhantes:["Síndrome Adeno-Coli","Candidíase"]},
+  pmv:{emoji:"🧠",nome:"Paramixovirose (PMV-1 / Doença de Newcastle)",tipo:"Viral",
+    causa:"Vírus PMV-1, muito próximo da Doença de Newcastle das galinhas. Altamente contagioso.",
+    sintomas:["Sede excessiva e fezes muito líquidas/aquosas","Perda de peso progressiva","Fezes verdes e viscosas","Casos avançados: torção do pescoço/cabeça, perda de coordenação"],
+    tratamento:"Não há cura direta — a vacinação já não ajuda depois de instalada. Isolamento essencial; o recuperado fica portador.",
+    prevencao:"Vacinação ANUAL obrigatória para concursos na maioria das federações. Jovens: vacinar às 4-8 semanas. Revacinar 4 semanas antes da reprodução.",
+    semelhantes:["Salmonelose (Paratifo)","traumatismo"]},
+  pox:{emoji:"🟡",nome:"Bexiga / Varíola do Pombo (Pigeon Pox)",tipo:"Viral",
+    causa:"Vírus transmitido por bicadas, mosquitos e ácaro vermelho. Mais comum no final do verão.",
+    sintomas:["Lesões elevadas, em crosta, amareladas","No bico, pernas e à volta dos olhos","Forma difteroide: placas na boca/garganta — mais grave"],
+    tratamento:"Sem tratamento antiviral direto — o pombo supera com a própria imunidade. Infeção secundária na garganta pode precisar de antibiótico. Isolar.",
+    prevencao:"Vacinação pelo menos 6 semanas antes da época (picada na membrana da asa).",
+    semelhantes:["Tricomoníase (forma difteroide)"]},
+  coccidiose:{emoji:"🦠",nome:"Coccidiose",tipo:"Parasitária",
+    causa:"Eimeria labbeana e columbarum. A parasitose intestinal mais comum, sobretudo em jovens. Contágio por chão contaminado/húmido.",
+    sintomas:["Fezes moles e aquosas, por vezes esverdeadas","Perda de peso e fraqueza","Crescimento atrasado nos jovens","Maus resultados mesmo sem sintomas evidentes"],
+    tratamento:"Curas específicas 3-7 dias (Toltrazuril ou Sulfa/Trimetoprim). Diagnóstico por análise de fezes.",
+    prevencao:"Hok seco — os ovos precisam de ~10 dias de humidade para amadurecer. Grades no fundo, limpeza diária.",
+    semelhantes:["Vermes intestinais","Hexamitiase"]},
+  tricomoniase:{emoji:"💛",nome:"Tricomoníase (\"o Amarelo\" / Canker)",tipo:"Parasitária",
+    causa:"Trichomonas columbae, no papo/garganta. Transmite-se por água contaminada e pais a alimentar crias.",
+    sintomas:["Placas amareladas na garganta/papo","Perda de apetite súbita","Emagrecimento","Casos graves: morte súbita — retirar o pombo morto já"],
+    tratamento:"Cura mínima de 5 dias (Ronidazol/Dimetridazol). Assim que 1 pombo tem sintomas, tratar o bando todo.",
+    prevencao:"Água limpa e trocada com regularidade. Cura preventiva nos reprodutores antes da eclosão.",
+    semelhantes:["Bexiga (forma difteroide)","Hexamitiase"]},
+  paratifo:{emoji:"🦴",nome:"Paratifo (Salmonelose)",tipo:"Bacteriana",
+    causa:"Salmonella typhimurium var. Copenhagen. Pode afetar intestinos, articulações e outros órgãos.",
+    sintomas:["Coxeadura e voo anormal","Diarreia e perda de apetite","Perda de peso","Baixa geral de performance"],
+    tratamento:"Antibioterapia dirigida — idealmente com antibiograma, pois pode haver resistência. Isolar os doentes.",
+    prevencao:"Vacinação anual recomendada. Higiene rigorosa da água e alimentação.",
+    semelhantes:["Paramixovirose","Adeno-Coli","Coccidiose"]},
+  adenocoli:{emoji:"🤢",nome:"Síndrome Adeno-Coli",tipo:"Vírus + Bactéria",
+    causa:"Adenovírus + E. coli. Sobretudo até 1 ano de idade, após stress (engaiolamento, sobrelotação, transporte).",
+    sintomas:["Muita sede, pouco apetite","Vómito e diarreia esverdeada com mau cheiro","Fraqueza rápida","Pode haver mortalidade em surtos graves"],
+    tratamento:"Sem vacina. Antibiótico dirigido à E. coli + reidratação e apoio digestivo.",
+    prevencao:"Reduzir stress (evitar sobrelotação, bom engaiolamento), boa higiene do hok.",
+    semelhantes:["Ornitose","Paratifo"]},
+  candidiase:{emoji:"🍄",nome:"Candidíase (Megabacteriose)",tipo:"Fúngica",
+    causa:"Candida albicans no papo — geralmente após uso excessivo de antibióticos ou baixa imunidade.",
+    sintomas:["Falta de vontade de voar","Fraco rendimento em prova/treinos","Perdas sem razão aparente durante voos"],
+    tratamento:"Antifúngicos específicos (nistatina). Evitar antibióticos prolongados/desnecessários.",
+    prevencao:"Reforçar flora intestinal com probióticos após qualquer cura antibiótica.",
+    semelhantes:["Ornitose"]},
+  vermes:{emoji:"🪱",nome:"Vermes intestinais (Áscaris / Capilárias / Ténias)",tipo:"Parasitária",
+    causa:"Nemátodes (áscaris, capilárias) e cestódes (ténias). Uma fêmea de áscaris põe até 5000 ovos/dia.",
+    sintomas:["Pouca eficiência digestiva apesar de comer bem","Fezes moles e mais claras","Emagrecimento com apetite normal/aumentado","Capilárias: sintomas mais intensos"],
+    tratamento:"Desparasitante oral — repetir 10-14 dias depois. Ténias precisam de produto específico (Praziquantel).",
+    prevencao:"Análise de fezes periódica. Desparasitação de rotina antes da reprodução e da época.",
+    semelhantes:["Coccidiose"]},
+  parasitas_externos:{emoji:"🦟",nome:"Parasitas externos (piolhos, ácaros, ácaro vermelho)",tipo:"Parasitária",
+    causa:"Piolhos das penas, ácaros da pele e ácaro vermelho (esconde-se de dia em fendas, ataca à noite). Também transmite a varíola.",
+    sintomas:["Penas roídas ou irregulares","Comichão e agitação, sobretudo à noite","Anemia em infestações graves"],
+    tratamento:"Pó/spray inseticida na ave + tratamento do hok em simultâneo (fendas de madeira).",
+    prevencao:"Limpeza e desinfeção regular do pombal, inspeção visual das penas.",
+    semelhantes:["Bexiga (vetor de transmissão)"]}
+};
+
+const ARTIGOS={
+  candida_artigo:{titulo:"Cândida Albicans — um problema atual na columbofilia",data:"2011",fonte:"Alexandre Pedro / Loftgest",
+    texto:"Sinais referidos: cansaço, tristeza, voo de bico aberto, diarreia, pouca vontade de voar, perda de apetite, vómito, penas sem brilho.\nContextos de risco: encestamentos frequentes, calor, água estagnada, stress de provas, uso excessivo de medicação.\nAbordagem da fonte: antifúngicos, vinagre de sidra, equinácea, óleos alimentares, probióticos e vitaminas."},
+  bioactive:{titulo:"Bioactive — estimulador de energia antes das corridas",data:"2014",fonte:"Alexandre Pedro / Loftgest",
+    texto:"Componentes: pólen de abelha, trimetilglicina/betaína, ginseng siberiano, vitamina B12.\nUso referido: antes do encestamento, para energia, resistência e recuperação."},
+  vitamina_d3:{titulo:"Vitamina D3 ou Enxofre",data:"2022",fonte:"Alexandre Pedro / Loftgest",
+    texto:"Sinais referidos: coxear, asas descaídas, cansaço, palidez ocular, alterações das penas.\nNutrientes: vitamina D3, fósforo, cálcio, magnésio, leucina, isoleucina.\nAlternativa referida: Spirulina como fonte mineral durante a muda."},
+  guarana:{titulo:"Guaraná em xarope ou em pó",data:"2022",fonte:"Alexandre Pedro / Loftgest",
+    texto:"Componentes: cafeína, teobromina, teofilina, antioxidantes.\nObjetivos: alerta, atenção, energia, resistência, redução da fadiga."},
+  diarreia_artigo:{titulo:"A saga da diarreia continua",data:"2022",fonte:"Alexandre Pedro / Loftgest",
+    texto:"Sinais: diarreia esverdeada, esbranquiçada ou muito líquida, vómitos.\nAbordagem: água de arroz integral, eletrólitos, alimentação de fácil digestão.\n⚠️ O próprio artigo aconselha NÃO dar antibiótico sem perceber a causa."}
+};
+
+// ── PESQUISA POR SINTOMAS (pontuação por palavras, fallback inteligente) ──
+// Texto amplo por doença: sintomas + frases naturais que alguém escreveria.
+// Usado quando nenhuma regra específica acima disparou, para nunca cair
+// diretamente na lista genérica de produtos sem antes tentar perceber o caso.
+const SINTOMAS_BUSCA={
+  ornitose:'espirros respiracao dificuldade respirar olhos humidos inchados espuma narinas sujas crosta muco tosse voz rouca ofegante cansado nao rende performance',
+  pmv:'sede excessiva bebe muita agua fezes liquidas aquosas verdes viscosas peso torcicolo pescoco torto cabeca torta equilibrio tremores anda estranho neurologico coordenacao',
+  pox:'lesoes crosta amareladas bico pernas olhos placas boca garganta dificuldade engolir',
+  coccidiose:'fezes moles aquosas esverdeadas jovens peso fraqueza crescimento atrasado borrachos nao crescem',
+  tricomoniase:'placas amarelas garganta papo amarelo apetite emagrece morte subita canker',
+  hexamitiase:'diarreia digestao jovens condicao fraco',
+  paratifo:'coxeadura coxo manco voo anormal artriculacoes inchadas anda mal das patas',
+  adenocoli:'sede pouco apetite vomito diarreia esverdeada mau cheiro fraqueza rapida jovem stress engaiolamento transporte',
+  candidiase:'nao quer voar sem vontade voar fraco rendimento bico aberto perdas sem razao cansado triste',
+  vermes:'digestao ineficiente fezes moles claras emagrece come bem visivel na fezes lombrigas',
+  parasitas_externos:'penas roidas irregulares falta de penas sem penas caidas arrancadas calvo calvicie pescoco pelado comichao agitado noite piolhos acaros vermelho anemia'
+};
+
+function normalizarTexto_(t){
+  return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+
+const STOPWORDS_=['tenho','pombo','pombos','com','para','por','que','uma','umas','uns','esta','este','estao','tem','muito','pouco','meu','meus','minha','minhas','como','onde','quando','porque','sobre','debaixo','baixo'];
+
+function pesquisarPorSintomas_(q){
+  const palavras=q.split(/\s+/).filter(p=>p.length>=4 && !STOPWORDS_.includes(p));
+  if(palavras.length===0)return null;
+
+  let melhorId=null,melhorScore=0;
+  for(const id in SINTOMAS_BUSCA){
+    const texto=normalizarTexto_(SINTOMAS_BUSCA[id]);
+    let score=0;
+    palavras.forEach(p=>{ if(texto.includes(p))score++; });
+    if(score>melhorScore){melhorScore=score;melhorId=id;}
+  }
+
+  if(melhorId && melhorScore>=2){
+    return {id:melhorId,score:melhorScore};
+  }
+  return null;
+}
+
+function formatDoenca(id){
+  const d=DOENCAS[id];if(!d)return'';
+  let r=`${d.emoji} ${d.nome}  [${d.tipo}]`;
+  r+=`\n\n🔬 Causa: ${d.causa}`;
+  r+=`\n\n⚠️ Sintomas:\n`+d.sintomas.map(s=>'• '+s).join('\n');
+  r+=`\n\n💊 O que fazer: ${d.tratamento}`;
+  r+=`\n\n🛡️ Prevenção: ${d.prevencao}`;
+  return r;
+}
+
+function formatDoencaExtra(id){
+  const d=DOENCAS[id];if(!d)return'';
+  let r='';
+  if(d.semelhantes)r+=`🔍 Pode confundir-se com: ${d.semelhantes.join(', ')}\n`;
+  r+=`‼️ Não substitui veterinário. Vários doentes/morte súbita → veterinário já.`;
+  return r;
+}
+
+function formatArtigo(id){
+  const a=ARTIGOS[id];if(!a)return'';
+  return `📚 ${a.titulo} (${a.data})\nFonte: ${a.fonte}\n\n${a.texto}\n\n⚠️ Nota: opinião/experiência do autor, não é consenso veterinário.`;
+}
+
+// Sinónimos extra por doença, para o motor de pontuação apanhar frases não previstas literalmente
+const KEYWORDS_EXTRA={
+  ornitose:"tosse espirro respirar ofegante voz rouca narinas sujas olho inchado",
+  pmv:"pescoco torto cabeca torta desequilibrio anda aos circulos sede muita agua",
+  pox:"crosta amarela bico inchado perna inchada verruga borbulha",
+  coccidiose:"jovem fraco cresce pouco fezes esverdeadas aquosas",
+  tricomoniase:"placa amarela garganta boca papo mole nao come morte subita",
+  hexamitiase:"jovem digestao fraca",
+  paratifo:"coxo perna inchada articulacao inchada anda mal nao apoia a pata",
+  adenocoli:"vomita cheira mal fraco de repente jovem stress viagem",
+  candidiase:"nao quer voar cansado bico aberto a voar",
+  vermes:"come bem mas magro verme no cocô lombriga",
+  parasitas_externos:"falta de pena sem pena pena caida calvo careca comichao coca a noite pescoco pelado arrancada base do pescoco"
+};
+
+function pesquisaInteligente_(q){
+  let melhorId=null, melhorScore=0;
+  for(const [id,d] of Object.entries(DOENCAS)){
+    const texto=(d.nome+' '+d.causa+' '+d.sintomas.join(' ')+' '+(KEYWORDS_EXTRA[id]||''))
+      .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const palavras=q.split(/\s+/).filter(w=>w.length>3);
+    let score=0;
+    palavras.forEach(w=>{ if(texto.includes(w)) score++; });
+    if(score>melhorScore){ melhorScore=score; melhorId=id; }
+  }
+  return melhorScore>=2 ? melhorId : null;
+}
+
+function produtosParaDoenca_(id){
+  const g=findProduto('geledor'), t=findProduto('talco'), v=findProduto('vermizoo');
+  const s=findProduto('salmacoli'), b=findProduto('biosac'), h=findProduto('herbolan');
+  const hx=findProduto('hexaplus'), f=findProduto('flagyl'), o=findProduto('oxygen');
+  switch(id){
+    case 'tricomoniase': return `📦 Do teu inventário:\n\n${formatProduto(hx.nome,hx.p)}\n\n${formatProduto(f.nome,f.p)}\n\n${formatProduto(o.nome,o.p)}`;
+    case 'ornitose': {
+      const resp=['Broncolis','Zooresp Optiprobios','Rovamycine','Oxygen Plus'];
+      return `📦 Do teu inventário:\n\n`+resp.map(n=>{const r=findProduto(n.toLowerCase().split(' ')[0]);return r?formatProduto(r.nome,r.p):''}).filter(Boolean).join('\n\n');
+    }
+    case 'pmv': case 'pox': case 'adenocoli':
+      return g?`📦 Do teu inventário (proteção viral):\n\n${formatProduto(g.nome,g.p)}`:'';
+    case 'paratifo': {
+      let prod='';
+      if(s)prod+=`📦 Do teu inventário:\n\n${formatProduto(s.nome,s.p)}`;
+      if(g)prod+=(prod?'\n\n':'📦 Do teu inventário:\n\n')+formatProduto(g.nome,g.p);
+      return prod;
+    }
+    case 'candidiase': {
+      let prod='📦 Apoio probiótico do teu inventário:\n\n';
+      if(b)prod+=formatProduto(b.nome,b.p);
+      if(h)prod+=(b?'\n\n':'')+formatProduto(h.nome,h.p);
+      return prod+`\n\n${formatArtigo('candida_artigo')}`;
+    }
+    case 'vermes': return v?`📦 Do teu inventário:\n\n${formatProduto(v.nome,v.p)}`:'';
+    case 'parasitas_externos': return t?`📦 Do teu inventário:\n\n${formatProduto(t.nome,t.p)}`:'';
+    case 'coccidiose': return `📦 Não tens coccidiostático registado no inventário — fala com o teu fornecedor habitual (ex: à base de Toltrazuril).`;
+    default: return '';
+  }
+}
+
 // ── CHATBOT ─────────────────────────────────────────────────
 const hist=[];let busy=false;
 
@@ -741,18 +967,71 @@ function responderOffline(msg){
     return r ? formatProduto(r.nome,r.p) : '🛁 Belgavet Balneo: 4ml nos 2L de água de banho. Sexta-feira. Não é para beber!';
   }
 
-  // TRICOMONAS
-  if(q.includes('tricomon') || q.includes('hexaplus') || q.includes('flagyl')){
+  // TRICOMONAS (com ficha da doença)
+  if(q.includes('tricomon') || q.includes('amarelo') || q.includes('placas na boca') || q.includes('canker') || q.includes('hexaplus') || q.includes('flagyl')){
     const h=findProduto('hexaplus');
     const f=findProduto('flagyl');
     const o=findProduto('oxygen');
-    return `🦠 Produtos para Tricomonas:\n\n${formatProduto(h.nome,h.p)}\n\n${formatProduto(f.nome,f.p)}\n\n${formatProduto(o.nome,o.p)}`;
+    return [
+      formatDoenca('tricomoniase'),
+      `📦 O que usar (do teu inventário):\n\n${formatProduto(h.nome,h.p)}\n\n${formatProduto(f.nome,f.p)}\n\n${formatProduto(o.nome,o.p)}\n\n${formatDoencaExtra('tricomoniase')}`
+    ];
   }
 
-  // RESPIRATÓRIO
-  if(q.includes('respirat') || q.includes('broncolis') || q.includes('tosse') || q.includes('muco') || q.includes('pulmao')){
+  // RESPIRATÓRIO (com ficha da doença — Ornitose)
+  if(q.includes('respirat') || q.includes('broncolis') || q.includes('tosse') || q.includes('muco') || q.includes('pulmao') || q.includes('ornitose') || q.includes('espirr')){
     const resp=['Broncolis','Zooresp Optiprobios','Rovamycine','Oxygen Plus'];
-    return `🫁 Produtos Respiratórios:\n\n`+resp.map(n=>{const r=findProduto(n.toLowerCase().split(' ')[0]);return r?formatProduto(r.nome,r.p):''}).filter(Boolean).join('\n\n');
+    const lista=resp.map(n=>{const r=findProduto(n.toLowerCase().split(' ')[0]);return r?formatProduto(r.nome,r.p):''}).filter(Boolean).join('\n\n');
+    return [ formatDoenca('ornitose'), `📦 O que usar (do teu inventário):\n\n${lista}\n\n${formatDoencaExtra('ornitose')}` ];
+  }
+
+  // COCCIDIOSE
+  if(q.includes('coccidiose') || q.includes('eimeria') || (q.includes('fezes') && q.includes('jovem'))){
+    return [ formatDoenca('coccidiose'), `📦 Não tens coccidiostático registado no inventário — fala com o teu fornecedor habitual (ex: à base de Toltrazuril).\n\n${formatDoencaExtra('coccidiose')}` ];
+  }
+
+  // PARAMIXOVIROSE / PMV
+  if(q.includes('paramixo') || q.includes('pmv') || q.includes('newcastle') || q.includes('torcicolo') || q.includes('pescoco torto') || q.includes('tremor')){
+    const g=findProduto('geledor');
+    return [ formatDoenca('pmv'), (g?`📦 Do teu inventário (proteção viral):\n\n${formatProduto(g.nome,g.p)}\n\n`:'')+formatDoencaExtra('pmv') ];
+  }
+
+  // BEXIGA / VARÍOLA / POX
+  if(q.includes('bexiga') || q.includes('variola') || q.includes('pox')){
+    const g=findProduto('geledor');
+    return [ formatDoenca('pox'), (g?`📦 Do teu inventário (proteção viral):\n\n${formatProduto(g.nome,g.p)}\n\n`:'')+formatDoencaExtra('pox') ];
+  }
+
+  // PARATIFO / SALMONELOSE
+  if(q.includes('paratifo') || q.includes('salmonel') || q.includes('coxead')){
+    const s=findProduto('salmacoli');
+    const g=findProduto('geledor');
+    let prod='';
+    if(s)prod+=`📦 Do teu inventário:\n\n${formatProduto(s.nome,s.p)}`;
+    if(g)prod+=(prod?'\n\n':'📦 Do teu inventário:\n\n')+formatProduto(g.nome,g.p);
+    return [ formatDoenca('paratifo'), prod+`\n\n${formatDoencaExtra('paratifo')}` ];
+  }
+
+  // ADENO-COLI
+  if(q.includes('adenocoli') || q.includes('adeno coli') || q.includes('adenovirus') || (q.includes('vomito') && q.includes('diarreia'))){
+    const g=findProduto('geledor');
+    return [ formatDoenca('adenocoli'), (g?`📦 Do teu inventário (proteção viral):\n\n${formatProduto(g.nome,g.p)}\n\n`:'')+formatDoencaExtra('adenocoli') ];
+  }
+
+  // CANDIDÍASE
+  if(q.includes('candida') || q.includes('fungo') || q.includes('bico aberto') || q.includes('nao quer voar') || q.includes('sem vontade de voar')){
+    const b=findProduto('biosac');
+    const h=findProduto('herbolan');
+    let prod='📦 Apoio probiótico do teu inventário:\n\n';
+    if(b)prod+=formatProduto(b.nome,b.p);
+    if(h)prod+=(b?'\n\n':'')+formatProduto(h.nome,h.p);
+    return [ formatDoenca('candidiase'), prod, `${formatArtigo('candida_artigo')}\n\n${formatDoencaExtra('candidiase')}` ];
+  }
+
+  // PARASITAS EXTERNOS (piolhos, ácaros)
+  if(q.includes('piolho') || q.includes('acaro') || q.includes('comichao') || q.includes('penas roidas') || q.includes('falta de pena') || q.includes('sem pena') || q.includes('pena caida') || q.includes('penas caidas') || q.includes('pescoco pelado') || q.includes('pescoco sem pena') || q.includes('arrancad') || q.includes('calvo') || q.includes('calvic')){
+    const t=findProduto('talco');
+    return [ formatDoenca('parasitas_externos'), (t?`📦 Do teu inventário:\n\n${formatProduto(t.nome,t.p)}\n\n`:'')+formatDoencaExtra('parasitas_externos') ];
   }
 
   // RECUPERAÇÃO PÓS-VOO
@@ -760,14 +1039,38 @@ function responderOffline(msg){
     return `🏆 Recuperação Pós-Voo\n\nDia da chegada:\n💧 Água: Glucose+Vitamins → 4-10 colheres nos 2L\n🌾 Ração: Óleo + Levedura + Herbolan\n\nDia seguinte:\n💧 Água limpa\n🌾 Ração: Bio-Sac Crómio + Óleo\n\nSe respiratório:\n💧 Broncolis 2-4ml nos 2L · 3-5 dias\n\nSe vermes (preventivo):\n💧 Vermizoo 4-6g nos 2L`;
   }
 
-  // VERMES
-  if(q.includes('verme') || q.includes('vermizoo') || q.includes('parasit') || q.includes('levamisol')){
+  // VERMES (com ficha da doença)
+  if(q.includes('verme') || q.includes('ascaris') || q.includes('capilaria') || q.includes('tenia') || q.includes('vermizoo') || q.includes('parasit') || q.includes('levamisol')){
     const r=findProduto('vermizoo');
-    return r ? formatProduto(r.nome,r.p) : '';
+    return [ formatDoenca('vermes'), (r?`📦 Do teu inventário:\n\n${formatProduto(r.nome,r.p)}\n\n`:'')+formatDoencaExtra('vermes') ];
   }
 
-  // TODOS OS PRODUTOS
-  if(q.includes('produto') || q.includes('lista') || q.includes('o que tens') || q.includes('tenho')){
+  // DIARREIA GERAL (quando não é específico de nenhuma doença acima)
+  if(q.includes('diarreia') || q.includes('fezes moles') || q.includes('fezes liquidas')){
+    return `💩 Diarreia — possíveis causas a considerar:\n\n• Coccidiose (fezes esverdeadas, jovens)\n• Tricomoníase / Hexamitiase\n• Paratifo / Salmonelose\n• Síndrome Adeno-Coli (com vómito)\n• Paramixovirose (com muita sede)\n\nPergunta-me por cada uma para veres sintomas e tratamento (ex: "coccidiose", "paratifo").\n\n${formatArtigo('diarreia_artigo')}`;
+  }
+
+  // ARTIGOS TÉCNICOS — Alexandre Pedro / Loftgest
+  if(q.includes('guarana') || q.includes('cafeina')){
+    return formatArtigo('guarana');
+  }
+  if(q.includes('vitamina d3') || q.includes('enxofre') || (q.includes('muda') && q.includes('pena'))){
+    return formatArtigo('vitamina_d3');
+  }
+  if(q.includes('bioactive') || q.includes('estimulador de energia') || (q.includes('energia') && q.includes('antes') && q.includes('corrida'))){
+    return formatArtigo('bioactive');
+  }
+
+  // FALLBACK INTELIGENTE — analisa a frase toda contra sintomas conhecidos,
+  // em vez de cair logo no catch-all quando nenhum bloco específico bateu certo
+  const doencaProvavel=pesquisaInteligente_(q);
+  if(doencaProvavel){
+    const prod=produtosParaDoenca_(doencaProvavel);
+    return [ formatDoenca(doencaProvavel), (prod?prod+'\n\n':'')+formatDoencaExtra(doencaProvavel) ];
+  }
+
+  // TODOS OS PRODUTOS (só dispara com intenção clara de listagem, nunca sozinho por "tenho")
+  if((q.includes('produto') && (q.includes('tenho')||q.includes('todos')||q.includes('lista')||q.includes('quais'))) || q.includes('o que tens')){
     return `📦 Todos os produtos:\n\nSUPLEMENTOS: Klaus AminoPrime, Herbolan, Levedura Cerveja, Óleo Girassol, Bio-Sac Crómio, Vitamino L, L-Carnitine Forte\n\nENERGIA: Glucose+Vitamins, Energy Activator, Victory Taurine\n\nRESPIRATÓRIO: Broncolis, Zooresp, Rovamycine, Oxygen Plus, Pantasmoke\n\nTRICOMONAS: HexaPlus, Flagyl\n\nANTIBIÓTICOS: Baytril, Bactrim, Salmacoli Zoopan\n\nANTIPARASITÁRIO: Vermizoo\n\nPROTEÇÃO VIRAL: Geledor 7-em-1\n\nHIGIENE: Belgavet Balneo, Pó de Talco`;
   }
 
@@ -785,7 +1088,30 @@ function responderOffline(msg){
     return `🌾 Ração: Asas D'Ouro Premium (frente) = Columbofauna Criação Extra (verso) — mesmo produto.\n\nReprodutores: 40 pombos × 22g = 880g/dia\nBorrachos: 45 pombos × 22g = 990g/dia\n\nMarca: Irmãos Sousa · Validade: 03-09-2026`;
   }
 
-  return `Podes perguntar sobre:\n• Lembrete de hoje (água e comida)\n• Plano de criação / borrachos\n• Produto específico (ex: "dose do Klaus")\n• Recuperação pós-voo\n• Tricomonas, respiratório, vermes\n• Todos os produtos`;
+  // FALLBACK INTELIGENTE — pontuação por sintomas em vez de menu genérico
+  const deteccao=pesquisarPorSintomas_(q);
+  if(deteccao){
+    const produtosPorDoenca={
+      tricomoniase:()=>{const h=findProduto('hexaplus'),f=findProduto('flagyl'),o=findProduto('oxygen');return (h&&f&&o)?`📦 O que usar (do teu inventário):\n\n${formatProduto(h.nome,h.p)}\n\n${formatProduto(f.nome,f.p)}\n\n${formatProduto(o.nome,o.p)}`:'';},
+      ornitose:()=>{const l=['broncolis','zooresp','rovamycine','oxygen'].map(n=>{const r=findProduto(n);return r?formatProduto(r.nome,r.p):''}).filter(Boolean).join('\n\n');return l?`📦 O que usar (do teu inventário):\n\n${l}`:'';},
+      vermes:()=>{const r=findProduto('vermizoo');return r?`📦 Do teu inventário:\n\n${formatProduto(r.nome,r.p)}`:'';},
+      parasitas_externos:()=>{const t=findProduto('talco');return t?`📦 Do teu inventário:\n\n${formatProduto(t.nome,t.p)}`:'';},
+      pmv:()=>{const g=findProduto('geledor');return g?`📦 Do teu inventário (proteção viral):\n\n${formatProduto(g.nome,g.p)}`:'';},
+      pox:()=>{const g=findProduto('geledor');return g?`📦 Do teu inventário (proteção viral):\n\n${formatProduto(g.nome,g.p)}`:'';},
+      paratifo:()=>{const s=findProduto('salmacoli'),g=findProduto('geledor');let r='';if(s)r+=`📦 Do teu inventário:\n\n${formatProduto(s.nome,s.p)}`;if(g)r+=(r?'\n\n':'📦 Do teu inventário:\n\n')+formatProduto(g.nome,g.p);return r;},
+      adenocoli:()=>{const g=findProduto('geledor');return g?`📦 Do teu inventário (proteção viral):\n\n${formatProduto(g.nome,g.p)}`:'';},
+      candidiase:()=>{const b=findProduto('biosac'),h=findProduto('herbolan');let r='📦 Apoio probiótico do teu inventário:\n\n';if(b)r+=formatProduto(b.nome,b.p);if(h)r+=(b?'\n\n':'')+formatProduto(h.nome,h.p);return r;}
+    };
+    const gerarProdutos=produtosPorDoenca[deteccao.id];
+    const bolhaProdutos=gerarProdutos?gerarProdutos():'';
+    const aviso=`🔍 Não tenho a certeza absoluta (baseei-me nos sinais que descreveste) — ${formatDoencaExtra(deteccao.id)}`;
+    const bolhas=[`🤔 Pelos sinais que descreves, o mais provável é:\n\n${formatDoenca(deteccao.id)}`];
+    if(bolhaProdutos)bolhas.push(bolhaProdutos+`\n\n${formatDoencaExtra(deteccao.id)}`);
+    else bolhas.push(aviso);
+    return bolhas;
+  }
+
+  return `Podes perguntar sobre:\n• Lembrete de hoje (água e comida)\n• Plano de criação / borrachos\n• Produto específico (ex: "dose do Klaus")\n• Recuperação pós-voo\n• Doenças: tricomonas, respiratório, vermes, coccidiose, paramixovirose, bexiga, paratifo, adeno-coli, candidíase, piolhos/ácaros\n• Sintomas: diarreia, tosse, torcicolo, coxeadura, penas roídas\n• Artigos: guaraná, vitamina D3, bioactive\n• Todos os produtos`;
 }
 
 async function sendMsg(txt){
@@ -802,24 +1128,95 @@ async function sendMsg(txt){
   await new Promise(r=>setTimeout(r,350));
   const reply=responderOffline(msg);
   t.remove();
-  addmsg('a',reply);
+  const partes=Array.isArray(reply)?reply:[reply];
+  let primeira=null;
+  partes.forEach(p=>{ if(p){ const el=addmsg('a',p,false); if(!primeira)primeira=el; } });
+  if(primeira){
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{ primeira.scrollIntoView({behavior:'smooth',block:'start'}); });
+    });
+  }
   busy=false;
   document.getElementById('sb').disabled=false;
 }
-function addmsg(r,txt){
+function addmsg(r,txt,doScroll){
   const c=document.getElementById('msgs'),d=document.createElement('div');
   d.className='msg '+r;
   d.innerHTML=`<div class="mav">${r==='a'?'🕊️':'👤'}</div><div class="bub">${txt.replace(/\n/g,'<br>')}</div>`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+  c.appendChild(d);
+  if(doScroll!==false){
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{ d.scrollIntoView({behavior:'smooth',block:'start'}); });
+    });
+  }
+  return d;
+}
+function scrollToEnd(){
+  const c=document.getElementById('msgs');
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{ c.scrollTo({top:c.scrollHeight,behavior:'smooth'}); });
+  });
 }
 function typing(){
   const c=document.getElementById('msgs'),d=document.createElement('div');
   d.className='msg a';d.innerHTML='<div class="mav">🕊️</div><div class="bub"><div class="tdots"><span></span><span></span><span></span></div></div>';
-  c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+  c.appendChild(d);
+  requestAnimationFrame(()=>{ d.scrollIntoView({behavior:'smooth',block:'start'}); });
+  return d;
 }
 function csend(el){nav('pg-chat',6);setTimeout(()=>sendMsg(el.textContent),100);}
 function onK(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function rsz(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,80)+'px';}
+
+// ── PAINEL DE TÓPICOS (lateral) ──────────────────────────────
+function toggleTopics(open){
+  document.getElementById('topicsPanel').classList.toggle('on',open);
+  document.getElementById('topicsOverlay').classList.toggle('on',open);
+}
+function topicSend(el){
+  toggleTopics(false);
+  sendMsg(el.textContent);
+}
+
+// ── MICROFONE (reconhecimento de voz) ────────────────────────
+let recognition=null,listening=false;
+function toggleMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    alert('🎤 O reconhecimento de voz não está disponível neste browser.');
+    return;
+  }
+  if(!window.isSecureContext){
+    alert('🎤 O microfone só funciona em sites abertos por https (ex: GitHub Pages). Agora estás a abrir o ficheiro localmente, por isso não vai funcionar — mas vai funcionar assim que subires isto para o GitHub Pages.');
+    return;
+  }
+  const btn=document.getElementById('micBtn');
+  if(listening){
+    recognition&&recognition.stop();
+    return;
+  }
+  recognition=new SR();
+  recognition.lang='pt-PT';
+  recognition.interimResults=false;
+  recognition.maxAlternatives=1;
+  recognition.onstart=()=>{listening=true;btn.classList.add('listening');};
+  recognition.onresult=(e)=>{
+    const texto=e.results[0][0].transcript;
+    const inp=document.getElementById('inp');
+    inp.value=(inp.value?inp.value+' ':'')+texto;
+    rsz(inp);
+  };
+  recognition.onerror=(e)=>{
+    listening=false;btn.classList.remove('listening');
+    let msg='🎤 Não consegui ouvir.';
+    if(e.error==='not-allowed'||e.error==='service-not-allowed')msg='🎤 Permissão de microfone recusada.\n\n1) Vai a Definições do Android → Apps → Chrome → Permissões → Microfone → Permitir.\n2) Depois, no Chrome, toca no 🔒 ou ⓘ ao lado do link e permite o Microfone para este site.\n\nSó funciona com o site aberto por https (GitHub Pages), não localmente.';
+    else if(e.error==='no-speech')msg='🎤 Não ouvi nada. Tenta outra vez, mais perto do microfone.';
+    else if(e.error==='network')msg='🎤 Sem ligação para o reconhecimento de voz. Verifica a internet.';
+    alert(msg);
+  };
+  recognition.onend=()=>{listening=false;btn.classList.remove('listening');};
+  try{recognition.start();}catch(err){alert('🎤 Erro ao iniciar o microfone: '+err.message);}
+}
 
 // ── TEMPO ────────────────────────────────────────────────────
 const OWM_KEY='0cb38a58272637559fef238e6bbc0bd9';
