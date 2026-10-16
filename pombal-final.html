@@ -92,6 +92,13 @@ nav{background:rgba(9,9,15,0.97);backdrop-filter:blur(30px);border-top:1px solid
 .app-nome{font-size:14px;font-weight:600}
 .app-desc{font-size:11px;color:var(--t2);margin-top:2px}
 .app-seta{color:var(--gold);font-size:18px}
+.sensores-tit{display:flex;justify-content:space-between;align-items:center}
+.sensores-atualizar{background:none;border:1px solid var(--brd);color:var(--gold);border-radius:10px;width:34px;height:30px;font-size:16px;cursor:pointer}
+.sensores-atualizar:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+#sensores-lista{display:flex;flex-direction:column;gap:8px}
+.sensor-ponto{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sensor-ponto.on{background:var(--green)}
+.sensor-ponto.off{background:var(--t3)}
 .cbrain{width:50px;height:50px;border-radius:16px;background:radial-gradient(circle at 40% 40%,rgba(140,100,255,.35),rgba(80,40,180,.15));border:1px solid rgba(124,92,240,.3);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
 .cinfo{flex:1}
 .cq{font-size:13px;font-weight:500;color:var(--t1);line-height:1.4}
@@ -270,12 +277,12 @@ textarea::placeholder{color:var(--t3)}
   </div>
 
   <div class="grid" style="padding-top:10px">
-    <div class="gc gc4">
+    <div class="gc gc4" onclick="document.getElementById('sensores-pombal').scrollIntoView({behavior:'smooth'})">
       <div class="gcico">🌡️</div>
       <div class="gclbl">Sensores</div>
-      <div class="gcsub" style="color:rgba(255,255,255,.4);font-size:10px">Temperatura média</div>
-      <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-top:5px">22.0<span style="font-size:13px;color:var(--t2)">°C</span></div>
-      <div class="gcsub" style="margin-top:3px">Humidade: 44%</div>
+      <div class="gcsub" style="color:rgba(255,255,255,.4);font-size:10px">Temperatura</div>
+      <div id="cartao-temperatura" style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-top:5px">--</div>
+      <div id="cartao-humidade" class="gcsub" style="margin-top:3px">A carregar…</div>
     </div>
     <div class="gc gc5">
       <div class="gcico">🏆</div>
@@ -300,6 +307,13 @@ textarea::placeholder{color:var(--t3)}
 
   <div class="apps" id="apps-pombal">
     <div class="apps-tit">Câmaras e equipamentos</div>
+  </div>
+
+  <div class="apps" id="sensores-pombal">
+    <div class="apps-tit sensores-tit">Sensores do pombal
+      <button type="button" class="sensores-atualizar" onclick="atualizarSensores()" aria-label="Atualizar sensores">↻</button>
+    </div>
+    <div id="sensores-lista"><div class="app-desc">A carregar…</div></div>
   </div>
 
   <div class="cshort" onclick="nav('pg-chat',6)">
@@ -684,6 +698,118 @@ function criarLinkApp_(pacoteAndroid){
     </a>`).join('');
   contentor.insertAdjacentHTML('beforeend',botoes);
 })();
+
+// ── SENSORES eWeLink (lidos através do script Google) ─────
+const FICHEIRO_CONFIG_SENSORES='sensores-config.json';
+const TEMPO_LIMITE_SENSORES_MS=15000;
+const ICONES_LEITURA={temperatura:'🌡️',humidade:'💧',porta:'🚪',movimento:'🏃',interruptor:'💡',bateria:'🔋'};
+const PALAVRAS_SENSORES_=['sensor','temperatura','humidade','graus','barraco','aquecedor','exaustor','porta','movimento','luz'];
+const TAMANHO_MINIMO_PALAVRA=4;
+const PALAVRAS_GENERICAS_SENSORES_=['sensor','sensores','pombal'];
+
+async function lerUrlScriptSensores_(){
+  const resposta=await fetch(FICHEIRO_CONFIG_SENSORES,{cache:'no-store'});
+  if(!resposta.ok) throw new Error('falta o ficheiro '+FICHEIRO_CONFIG_SENSORES);
+  const config=await resposta.json();
+  if(!config.urlScript||config.urlScript.startsWith('COLA_AQUI')) throw new Error('falta o URL do script em '+FICHEIRO_CONFIG_SENSORES);
+  return config.urlScript;
+}
+
+async function obterSensores_(){
+  const urlScript=await lerUrlScriptSensores_();
+  const controlador=new AbortController();
+  const temporizador=setTimeout(()=>controlador.abort(),TEMPO_LIMITE_SENSORES_MS);
+  try{
+    const resposta=await fetch(urlScript+'?acao=sensores',{signal:controlador.signal});
+    const dados=await resposta.json();
+    if(!dados.ok) throw new Error(dados.erro||'erro no script');
+    return dados.dispositivos;
+  }catch(erro){
+    if(erro.name==='AbortError') throw new Error('o script demorou demasiado a responder');
+    throw erro;
+  }finally{
+    clearTimeout(temporizador);
+  }
+}
+
+function escaparHtml_(texto){
+  const div=document.createElement('div');
+  div.textContent=texto;
+  return div.innerHTML;
+}
+
+function descreverLeituras_(dispositivo){
+  if(!dispositivo.online) return 'sem ligação';
+  if(!dispositivo.leituras.length) return 'online';
+  return dispositivo.leituras.map(l=>`${ICONES_LEITURA[l.tipo]||''} ${l.texto}`).join(' · ');
+}
+
+function mostrarListaSensores_(dispositivos){
+  const lista=document.getElementById('sensores-lista');
+  if(!lista) return;
+  if(!dispositivos.length){lista.innerHTML='<div class="app-desc">Nenhum dispositivo encontrado na eWeLink.</div>';return;}
+  lista.innerHTML=dispositivos.map(d=>`
+    <div class="app-btn">
+      <span class="sensor-ponto ${d.online?'on':'off'}"></span>
+      <span class="app-txt"><div class="app-nome">${escaparHtml_(d.nome)}</div><div class="app-desc">${escaparHtml_(descreverLeituras_(d))}</div></span>
+    </div>`).join('');
+}
+
+function encontrarLeitura_(dispositivos,tipo){
+  for(const d of dispositivos){
+    const leitura=d.online&&d.leituras.find(l=>l.tipo===tipo);
+    if(leitura) return leitura;
+  }
+  return null;
+}
+
+function mostrarCartaoSensores_(dispositivos){
+  const temperatura=encontrarLeitura_(dispositivos,'temperatura');
+  const humidade=encontrarLeitura_(dispositivos,'humidade');
+  document.getElementById('cartao-temperatura').textContent=temperatura?temperatura.texto:'--';
+  document.getElementById('cartao-humidade').textContent=humidade?humidade.texto:'';
+}
+
+function mostrarErroSensores_(erro){
+  const lista=document.getElementById('sensores-lista');
+  if(lista) lista.innerHTML=`<div class="app-desc">⚠️ Não consegui ler os sensores: ${escaparHtml_(erro.message)}</div>`;
+  document.getElementById('cartao-humidade').textContent='Sem dados';
+}
+
+async function atualizarSensores(){
+  try{
+    const dispositivos=await obterSensores_();
+    mostrarListaSensores_(dispositivos);
+    mostrarCartaoSensores_(dispositivos);
+  }catch(erro){
+    mostrarErroSensores_(erro);
+  }
+}
+
+function perguntaEhSobreSensores_(perguntaNormalizada){
+  return PALAVRAS_SENSORES_.some(p=>perguntaNormalizada.includes(p));
+}
+
+function filtrarPorNome_(dispositivos,perguntaNormalizada){
+  const palavras=perguntaNormalizada.replace(/[^a-z0-9\s]/g,' ').split(/\s+/)
+    .filter(p=>p.length>=TAMANHO_MINIMO_PALAVRA && !STOPWORDS_.includes(p) && !PALAVRAS_GENERICAS_SENSORES_.includes(p));
+  const correspondentes=dispositivos.filter(d=>palavras.some(p=>normalizarTexto_(d.nome).includes(p)));
+  return correspondentes.length?correspondentes:dispositivos;
+}
+
+async function responderSobreSensores_(mensagem){
+  const pergunta=normalizarTexto_(mensagem);
+  if(!perguntaEhSobreSensores_(pergunta)) return null;
+  try{
+    const dispositivos=filtrarPorNome_(await obterSensores_(),pergunta);
+    const linhas=dispositivos.map(d=>`• ${d.nome}: ${descreverLeituras_(d)}`);
+    return `📡 Sensores do pombal\n\n${linhas.join('\n')}`;
+  }catch(erro){
+    return `⚠️ Não consegui ler os sensores agora (${erro.message}).`;
+  }
+}
+
+atualizarSensores();
 
 // ── PÁGINA DE PRODUTOS ──────────────────────────────────────
 (function(){
@@ -1187,7 +1313,7 @@ async function sendMsg(txt,opcoes={}){
   document.getElementById('sb').disabled=true;
   const t=typing();
   await new Promise(r=>setTimeout(r,350));
-  const reply=responderOffline(msg);
+  const reply=(await responderSobreSensores_(msg))||responderOffline(msg);
   t.remove();
   const partes=Array.isArray(reply)?reply:[reply];
   let primeira=null;
@@ -1291,10 +1417,14 @@ function limparTextoParaFala_(texto){
     .replace(/\uFE0F/g,'')
     .replace(/\s*\n+\s*/g,'. ')
     .replace(/(\.\s*){2,}/g,'. ')
+    .replace(/°C/g,' graus')
     .replace(/(\d)\s*ml\b/gi,'$1 mililitros')
     .replace(/(\d)\s*L\b/g,'$1 litros')
     .replace(/(\d)\s*g\b/g,'$1 gramas')
-    .replace(/\s*,\s*/g,', ')
+    .replace(/([.,])(\s*[.,])+/g,'$1')
+    .replace(/\s+([.,])/g,'$1')
+    .replace(/,(?=[^\s\d])/g,', ')
+    .replace(/\s{2,}/g,' ')
     .replace(/\b[A-ZÁÉÍÓÚÇÃÕ]{4,}\b/g,palavra=>palavra.toLowerCase())
     .trim();
 }
