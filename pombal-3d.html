@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pombal em 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fundo:#E6E9EC; --painel:#FFFFFF; --texto:#1C2430; --texto2:#5A6472; --linha:#CDD3DA;
+  --chao:#178C6E; --porta:#5B2BB5; --ninho:#2F7FE0; --armario:#F2B21C; --voliere:#C8273D; --xadrez:#F07A12; --corredor:#F2C9D8;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --fundo:#151A21; --painel:#1E252E; --texto:#E9EDF2; --texto2:#9AA5B3; --linha:#323C48; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{ --fundo:#151A21; --painel:#1E252E; --texto:#E9EDF2; --texto2:#9AA5B3; --linha:#323C48; color-scheme: dark; }
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+*,*::before,*::after{ box-sizing:inherit; }
+html,body{ height:100%; margin:0; }
+body{ background:var(--fundo); color:var(--texto); font-family:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif; overflow:hidden; }
+#cena{ position:fixed; inset:0; }
+#cena canvas{ display:block; touch-action:none; }
+.topo{ position:fixed; top:calc(env(safe-area-inset-top,0px) + 14px); left:16px; right:16px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; pointer-events:none; }
+.titulo{ font-size:clamp(22px,4vw,34px); font-weight:800; letter-spacing:-0.02em; line-height:1; margin:0; }
+.subtitulo{ margin:6px 0 0; color:var(--texto2); font-size:14px; }
+.botoes{ display:flex; gap:8px; pointer-events:auto; flex-wrap:wrap; justify-content:flex-end; }
+button{ font:inherit; font-size:14px; font-weight:600; padding:9px 14px; border-radius:999px; border:1px solid var(--linha); background:var(--painel); color:var(--texto); cursor:pointer; }
+button[aria-pressed="false"]{ opacity:.55; }
+button:focus-visible{ outline:3px solid var(--ninho); outline-offset:2px; }
+.folha{ position:fixed; left:12px; right:12px; bottom:calc(env(safe-area-inset-bottom,0px) + 12px); max-width:560px; background:var(--painel); border:1px solid var(--linha); border-radius:18px; padding:14px 16px; max-height:42vh; overflow:auto; }
+.folha h2{ font-size:16px; margin:0 0 8px; font-weight:600; }
+.legenda{ display:flex; flex-wrap:wrap; gap:6px 14px; margin:0 0 12px; padding:0; list-style:none; font-size:13px; color:var(--texto2); }
+.legenda li{ display:flex; align-items:center; gap:6px; }
+.legenda i{ width:14px; height:10px; border-radius:3px; display:inline-block; }
+.tabela-envolve{ overflow-x:auto; }
+table{ border-collapse:collapse; width:100%; font-size:13px; font-variant-numeric:tabular-nums; }
+th,td{ text-align:left; padding:5px 8px 5px 0; border-bottom:1px solid var(--linha); white-space:nowrap; }
+th{ color:var(--texto2); font-weight:400; }
+.nota{ font-size:12px; color:var(--texto2); margin:10px 0 0; line-height:1.45; }
+.esquema{ position:fixed; inset:0; z-index:5; background:var(--fundo); overflow:auto; padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 24px); }
+.esquema-topo{ display:flex; justify-content:space-between; align-items:center; gap:12px; max-width:720px; margin:0 auto 12px; }
+.esquema-topo h2{ margin:0; font-size:22px; font-weight:800; letter-spacing:-0.01em; }
+.esquema svg{ display:block; width:100%; max-width:720px; height:auto; margin:0 auto; }
+.esquema .caixa-svg{ fill:var(--painel); stroke:var(--linha); stroke-width:1.5; }
+.esquema .caixa-recomendada{ fill:var(--painel); stroke:var(--texto2); stroke-width:1.5; stroke-dasharray:6 4; }
+.esquema .grupo-svg{ fill:none; stroke:var(--texto2); stroke-width:1.5; stroke-dasharray:3 4; }
+.esquema .texto-svg{ fill:var(--texto); font-size:14px; font-weight:600; }
+.esquema .texto2-svg{ fill:var(--texto2); font-size:12px; }
+.esquema .linha-svg{ stroke:var(--texto2); stroke-width:2; fill:none; }
+.esquema-notas{ max-width:720px; margin:16px auto 0; font-size:14px; line-height:1.5; color:var(--texto2); padding-left:18px; }
+.esquema-notas li{ margin-bottom:6px; }
+@media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto; } }
+</style>
+</head>
+<body>
+<div id="cena" aria-label="Maquete 3D do pombal. Arraste para rodar, use dois dedos para aproximar."></div>
+
+<header class="topo">
+  <div>
+    <h1 class="titulo">O pombal em 3D</h1>
+    <p class="subtitulo">Arraste para rodar · dois dedos para aproximar · cabos coloridos = circuitos</p>
+  </div>
+  <div class="botoes">
+    <button type="button" id="botao-paredes" aria-pressed="true">Paredes</button>
+    <button type="button" id="botao-eletrico" aria-pressed="true">Elétrico</button>
+    <button type="button" id="botao-legendas" aria-pressed="false">Legendas</button>
+    <button type="button" id="botao-planta" aria-pressed="false">Planta 2D</button>
+    <button type="button" id="botao-esquema">Esquema</button>
+  </div>
+</header>
+
+<section class="folha" id="folha" hidden>
+  <h2>Áreas e volumes</h2>
+  <ul class="legenda" id="legenda"></ul>
+  <div class="tabela-envolve"><table id="tabela"></table></div>
+  <p class="nota" id="nota-alturas"></p>
+</section>
+
+<section class="esquema" id="esquema" hidden aria-labelledby="titulo-esquema">
+  <div class="esquema-topo">
+    <h2 id="titulo-esquema">Esquema elétrico</h2>
+    <button type="button" id="fechar-esquema">Fechar</button>
+  </div>
+  <svg viewBox="0 0 720 760" role="img" aria-label="Esquema unifilar da instalação elétrica do pombal">
+    <!-- Alimentação e proteções -->
+    <rect class="caixa-recomendada" x="20" y="16" width="300" height="52" rx="10"/>
+    <text class="texto-svg" x="36" y="40">Alimentação 230 V</text>
+    <text class="texto2-svg" x="36" y="58">origem a confirmar</text>
+    <path class="linha-svg" d="M170 68 V96"/>
+    <rect class="caixa-recomendada" x="20" y="96" width="300" height="52" rx="10"/>
+    <text class="texto-svg" x="36" y="120">Diferencial 30 mA</text>
+    <text class="texto2-svg" x="36" y="138">recomendado</text>
+    <path class="linha-svg" d="M170 148 V176"/>
+    <rect class="caixa-recomendada" x="20" y="176" width="300" height="52" rx="10"/>
+    <text class="texto-svg" x="36" y="200">Disjuntor 10 A · luzes</text>
+    <text class="texto2-svg" x="36" y="218">recomendado</text>
+    <path class="linha-svg" d="M170 228 V262"/>
+
+    <!-- Caixa dos arrumos -->
+    <rect class="grupo-svg" x="10" y="262" width="700" height="250" rx="14"/>
+    <text class="texto-svg" x="26" y="288">Caixa nos arrumos · atrás do pombal 3, no cimo da escada</text>
+    <text class="texto2-svg" x="26" y="306">4 × Sonoff BASICR4 (Wi-Fi, máx. 10 A / 2400 W cada)</text>
+    <path class="linha-svg" d="M40 320 V478"/>
+    <g id="esquema-circuitos"></g>
+
+    <!-- Casa da mãe -->
+    <rect class="grupo-svg" x="10" y="530" width="345" height="214" rx="14"/>
+    <text class="texto-svg" x="26" y="556">Comandos na casa da mãe</text>
+    <text class="texto2-svg" x="26" y="574">ligação ao pombal a confirmar</text>
+    <g id="esquema-remotos"></g>
+
+    <!-- Sensores -->
+    <rect class="grupo-svg" x="365" y="530" width="345" height="214" rx="14"/>
+    <text class="texto-svg" x="381" y="556">Sensores de temperatura</text>
+    <text class="texto2-svg" x="381" y="574">4 × SNZB-02P, um a meio de cada pombal</text>
+    <rect class="caixa-recomendada" x="381" y="600" width="313" height="52" rx="10"/>
+    <text class="texto-svg" x="397" y="624">Gateway Zigbee Sonoff</text>
+    <text class="texto2-svg" x="397" y="642">necessário no pombal · a confirmar</text>
+    <path class="linha-svg" d="M537 652 V676"/>
+    <rect class="caixa-svg" x="381" y="676" width="313" height="52" rx="10"/>
+    <text class="texto-svg" x="397" y="700">4 sensores SNZB-02P</text>
+    <text class="texto2-svg" x="397" y="718">a pilhas, sem cabos</text>
+  </svg>
+  <ul class="esquema-notas">
+    <li>Tracejado = recomendado ou ainda por confirmar. Os cabos coloridos na maquete 3D seguem as cores deste esquema.</li>
+    <li>Aquecedores em circuito próprio, sem extensões, e com potência abaixo dos 2400 W do BASICR4 que os comandar.</li>
+    <li>No pombal há pó e humidade: interruptores dentro de caixas de derivação fechadas, cabos presos às paredes e ao teto, longe do chão.</li>
+    <li>Isto é uma base de planeamento. A montagem e a verificação devem ser feitas por um eletricista certificado.</li>
+  </ul>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ── Alturas (provisórias até termos as medidas reais) ───────
+const ALTURAS = {
+  pombal: 2.2, armario: 2.0, ninho: 1.8, xadrez: 1.6, porta: 1.9, corredor: 2.2
+};
+const ESPESSURA_PAREDE = 0.06;
+const PROFUNDIDADE_NINHO = 0.3;
+const PROFUNDIDADE_XADREZ = 0.35;
+const ESPESSURA_TABUA = 0.02;
+// Xadrez do pombal 1 visto de frente: 7 colunas × 5 linhas (desenho do Ricardo).
+// Altura estimada pela proporção do desenho até termos as medidas reais.
+const GRELHA_XADREZ_POMBAL_1 = { colunas:7, linhas:5, altura:1.35, base:0.2 };
+const CASAS_DECIMAIS = 1;
+
+const CORES = {
+  chao:'#178C6E', porta:'#5B2BB5', ninho:'#2F7FE0', armario:'#F2B21C',
+  voliere:'#C8273D', xadrez:'#F07A12', corredor:'#F2C9D8', parede:'#D9DEE4', rede:'#C8273D',
+  luz:'#FFE36B', exaustor:'#2B3542', sensor:'#F7F8FA', lampada:'#FFD23F', caixa:'#E5E7EB', vidro:'#9FD3F5', ripas:'#B9B2A6', estrutura:'#A7B0B8'
+};
+
+const LEGENDA = [
+  ['chao','Chão / zona de alimentação'], ['porta','Portas'], ['ninho','Ninhos'],
+  ['armario','Armários'], ['voliere','Voliéres'], ['xadrez','Xadrez / patilhas'], ['corredor','Corredor'],
+  ['luz','Luminária LED estanque 120 cm (2 × T8)'], ['rede','Rede quadrada e voliére'], ['vidro','Portas transparentes'], ['ripas','Grade de ripas de cimento'], ['exaustor','Exaustor 80 mm (eWeLink)'], ['sensor','Sensor de temperatura e humidade SNZB-02P'], ['lampada','Lâmpada (eWeLink)'],
+  ['caixa','Caixa de interruptores L2–L5']
+];
+
+// ── Planta (metros; x para a direita, z para a frente) ──────
+// Lida da planta desenhada à mão: colunas de 2 m, 2,5 m e 2 m.
+const ESPACOS = [
+  { nome:'Pombal novo (1)', tipo:'pombal', x:0,   z:0, largura:2,   fundo:4, frenteDeRede:true },
+  { nome:'Pombal do meio (2)', tipo:'pombal', x:2,   z:2, largura:2.5, fundo:2   },
+  { nome:'Corredor', tipo:'corredor', x:4.5, z:2, largura:0.5, fundo:2 },
+  { nome:'Reprodutores (3)', tipo:'pombal', x:5,   z:2, largura:1.5, fundo:2   },
+  { nome:'Pombal 4', tipo:'pombal', x:4.5, z:4, largura:2,   fundo:1.5 },
+  { nome:'Armários e escada', tipo:'armarios', x:2, z:0, largura:4.5, fundo:2 }
+];
+
+// Voliéres de entrada (armadilha com tábua de aterragem), presas à parede da frente por fora.
+// Pombal 1: modelo de 50 × 47 × 50 cm. Pombal 2: um pouco maior (60 × 56 × 60 cm).
+const ALTURA_ENTRADA_AO_CHAO = 1.0;
+const PROFUNDIDADE_TABUA_ATERRAGEM = 0.15;
+const ESPESSURA_TABUA_ATERRAGEM = 0.02;
+const ENTRADAS = [
+  { nome:'Entrada pombal 2', centroX:3.2, zParede:4, largura:0.6, fundo:0.56, altura:0.6 }
+];
+
+const MOBILIARIO = [
+  // xadrez do pombal 1 (paredes laterais, zona de trás)
+  { tipo:'xadrez', x:0, z:0, largura:PROFUNDIDADE_XADREZ, fundo:2, grelha:GRELHA_XADREZ_POMBAL_1 },
+  { tipo:'xadrez', x:2 - PROFUNDIDADE_XADREZ, z:0, largura:PROFUNDIDADE_XADREZ, fundo:2, grelha:GRELHA_XADREZ_POMBAL_1 },
+  // ninhos do pombal 2 (parede de trás e parede esquerda)
+  { tipo:'ninho', x:2.6, z:2, largura:1.9, fundo:PROFUNDIDADE_NINHO },
+  { tipo:'ninho', x:2, z:2.6, largura:PROFUNDIDADE_NINHO, fundo:1.4 },
+  // ninhos do pombal 3
+  { tipo:'ninho', x:5, z:2, largura:1.5, fundo:PROFUNDIDADE_NINHO },
+  // pombal 4: o laranja são patilhas de repouso (ver PATILHAS)
+  // armários (zona de cima)
+  { tipo:'armario', x:2, z:0, largura:4.5, fundo:0.45 },
+  { tipo:'armario', x:2, z:0.45, largura:0.4, fundo:1.1 },
+  { tipo:'armario', x:5.2, z:0.45, largura:1.3, fundo:1.5 }
+];
+
+const PORTAS = [
+  { nome:'Pombal 1 ↔ 2', x:2,   z:2.15, eixo:'z', comprimento:0.5 },
+  { nome:'Corredor ↔ 2', x:4.5, z:3.2,  eixo:'z', comprimento:0.5 },
+  { nome:'Corredor ↔ 3', x:5,   z:3.2,  eixo:'z', comprimento:0.5 },
+  { nome:'Corredor ↔ 4', x:4.5, z:4,    eixo:'x', comprimento:0.5 },
+  { nome:'Entrada',      x:4.5, z:2,    eixo:'x', comprimento:0.5 }
+];
+
+// ── Equipamentos elétricos (desenho do pombal 1) ────────────
+const DIAMETRO_EXAUSTOR = 0.08;
+const ALTURA_EXAUSTOR_PAREDE = 1.9;
+const EQUIPAMENTOS = [
+  { tipo:'luz', nome:'Luz L1', x1:0.7, z1:0.25, x2:0.7, z2:1.55 },
+  { tipo:'luz', nome:'Luz L1', x1:0.45, z1:2.5, x2:1.65, z2:2.5 },
+  { tipo:'exaustor', nome:'Exaustor', montagem:'teto', x:0.97, z:0.8 },
+  { tipo:'exaustor', nome:'Exaustor', montagem:'parede', x:2, z:1.45 },
+  // Sensores Sonoff SNZB-02P, pendurados a meio de cada pombal
+  { tipo:'sensor', nome:'Sensor T/H', x:1.0,  z:1.5  },
+  { tipo:'sensor', nome:'Sensor T/H', x:3.25, z:3.0  },
+  { tipo:'sensor', nome:'Sensor T/H', x:5.75, z:3.0  },
+  { tipo:'sensor', nome:'Sensor T/H', x:5.5,  z:4.75 },
+  // Luzes dos outros espaços, com o nome que têm na app eWeLink (desenho Alphacam)
+  { tipo:'luz', nome:'Luz L2', x1:2.8, z1:3.85, x2:3.95, z2:3.85 },
+  { tipo:'luz', nome:'Luz L3', x1:5.45, z1:3.5, x2:6.15, z2:3.5 },
+  { tipo:'luz', nome:'Luz L5', x1:2.75, z1:1.3, x2:3.9, z2:1.3 },
+  { tipo:'lampada', nome:'Luz L4', x:4.75, z:3.6 },
+  { tipo:'lampada', nome:'Luz L4', x:5.75, z:4.7 }
+];
+
+// ── Pombal novo, de fora para dentro ───────────────────────
+// Frente de rede (z = 4) com porta de rede de 1 m e voliére por fora; 1 m de grade de ripas;
+// divisória de portas transparentes (z = 3); 1 m livre; divisória de rede com porta de correr (z = 2); xadrez.
+const ESPACAMENTO_REDE = 0.05;
+const PERFIL_ESTRUTURA = 0.04;
+const FRENTE_POMBAL_NOVO = { x1:0, x2:2, z:4 };
+const PORTA_REDE_FRENTE = { x1:1, x2:2 };          // visto de fora fica à esquerda
+const VOLIERE_POMBAL_NOVO = { x:0, z:4, largura:1, fundo:0.6, altura:1.0 };   // visto de fora fica à direita
+const GRADE_RIPAS = { x:0, z:3, largura:2, fundo:1, larguraRipa:0.07, espaco:0.03, espessura:0.04, alturaApoio:0.06 };
+const DIVISORIA_TRANSPARENTE = { z:3, paineis:[
+  { x1:0,   x2:0.7, porta:false }, { x1:0.7, x2:1.0, porta:true },
+  { x1:1.0, x2:1.3, porta:true },  { x1:1.3, x2:2.0, porta:false }
+] };
+const DIVISORIA_REDE = { x1:0, x2:2, z:2, porta:{ x1:0.6, x2:1.4 } };   // porta de correr a meio (largura provisória)
+
+// ── Instalação elétrica ─────────────────────────────────────
+// Caixa com os 4 interruptores BASICR4: atrás do pombal 3, nos arrumos, no cimo da escada
+const CAIXA_INTERRUPTORES = { x:2.4, z:1.9, y:1.3, largura:0.25, fundo:0.08, altura:0.4 };
+const ALTURA_CABOS = 2.12;
+const ESPESSURA_CABO = 0.025;
+
+// Cada circuito sai da caixa e segue pelo teto até aos pontos de luz (por ordem)
+const CIRCUITOS = [
+  { nome:'L2', cor:'#06B6D4', destino:'Fita LED · pombal do meio', pontos:[ {x:3.375, z:3.85} ] },
+  { nome:'L3', cor:'#84CC16', destino:'Fita LED · reprodutores',   pontos:[ {x:5.8, z:3.5} ] },
+  { nome:'L4', cor:'#F43F5E', destino:'2 lâmpadas · corredor e pombal 4', pontos:[ {x:4.75, z:3.6}, {x:5.75, z:4.7} ] },
+  { nome:'L5', cor:'#A855F7', destino:'Fita LED · arrumos e escada', pontos:[ {x:3.325, z:1.3} ] }
+];
+
+const COMANDOS_REMOTOS = [
+  { nome:'L1', destino:'2 fitas LED · pombal novo' },
+  { nome:'Exaustores', destino:'2 × 80 mm · pombal novo' },
+  { nome:'Aquecedores', destino:'localização a confirmar' }
+];
+
+// ── Patilhas de repouso (coluna com 5 patilhas em V, presa à parede) ──
+// "vira" = para onde a patilha aponta, a partir da parede: +z, -z, +x, -x
+const PATILHA = { patilhasPorColuna:5, alturaColuna:1.6, base:0.2, larguraColuna:0.12, saliencia:0.18 };
+const ROTACAO_POR_DIRECAO = { '+z':0, '-z':Math.PI, '+x':Math.PI / 2, '-x':-Math.PI / 2 };
+const PATILHAS = [
+  // pombal 1: 3 ao fundo
+  { x:0.65, z:0, vira:'+z' }, { x:1.0, z:0, vira:'+z' }, { x:1.35, z:0, vira:'+z' },
+  // pombal 2: 2 ao fundo, 2 no lado direito, 1 à frente
+  { x:2.15, z:2, vira:'+z' }, { x:2.45, z:2, vira:'+z' },
+  { x:4.5, z:2.55, vira:'-x' }, { x:4.5, z:2.95, vira:'-x' },
+  { x:4.15, z:4, vira:'-z' },
+  // pombal 3: 3 no lado direito, 2 à esquerda junto aos ninhos
+  { x:6.5, z:2.6, vira:'-x' }, { x:6.5, z:3.1, vira:'-x' }, { x:6.5, z:3.6, vira:'-x' },
+  { x:5, z:2.5, vira:'+x' }, { x:5, z:2.9, vira:'+x' },
+  // pombal 4: onde estava o laranja (quantidade estimada)
+  { x:4.5, z:4.4, vira:'+x' }, { x:4.5, z:4.8, vira:'+x' }, { x:4.5, z:5.2, vira:'+x' },
+  { x:6.5, z:4.4, vira:'-x' }, { x:6.5, z:4.8, vira:'-x' }, { x:6.5, z:5.2, vira:'-x' },
+  { x:4.9, z:5.5, vira:'-z' }, { x:5.3, z:5.5, vira:'-z' }, { x:5.7, z:5.5, vira:'-z' }, { x:6.1, z:5.5, vira:'-z' }
+];
+
+// ── Cena ────────────────────────────────────────────────────
+const contentor = document.getElementById('cena');
+const cena = new THREE.Scene();
+const camara = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+const renderizador = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+renderizador.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+contentor.appendChild(renderizador.domElement);
+
+const CENTRO = new THREE.Vector3(3.25, -0.4, 2.75);
+camara.position.set(CENTRO.x - 6, 8, CENTRO.z + 9.5);
+const controlos = new THREE.OrbitControls(camara, renderizador.domElement);
+controlos.target.copy(CENTRO);
+controlos.enableDamping = true;
+controlos.maxPolarAngle = Math.PI * 0.49;
+controlos.minDistance = 3;
+controlos.maxDistance = 25;
+
+cena.add(new THREE.HemisphereLight(0xffffff, 0x8899aa, 0.85));
+const sol = new THREE.DirectionalLight(0xffffff, 0.6);
+sol.position.set(-4, 10, 6);
+cena.add(sol);
+
+const grupoParedes = new THREE.Group();
+const grupoNomes = new THREE.Group();
+const grupoEletrico = new THREE.Group();
+cena.add(grupoParedes, grupoNomes, grupoEletrico);
+// Sem legendas ao abrir; o botão «Legendas» mostra os nomes e a folha de medidas
+grupoNomes.visible = false;
+
+function criarMaterial(cor, opcoes = {}) {
+  return new THREE.MeshLambertMaterial({ color:cor, ...opcoes });
+}
+
+function criarCaixa({ x, z, largura, fundo, altura, y = 0, cor, opcoes }) {
+  const malha = new THREE.Mesh(new THREE.BoxGeometry(largura, altura, fundo), criarMaterial(cor, opcoes));
+  malha.position.set(x + largura / 2, y + altura / 2, z + fundo / 2);
+  return malha;
+}
+
+function criarChao(espaco) {
+  if (espaco.tipo === 'armarios') {
+    // transparente para se ver a escada que desce até ao pátio
+    return criarCaixa({ ...espaco, altura:0.04, cor:'#BFC6CE', opcoes:{ transparent:true, opacity:0.35, depthWrite:false } });
+  }
+  const corChao = espaco.tipo === 'corredor' ? CORES.corredor : CORES.chao;
+  return criarCaixa({ ...espaco, altura:0.04, cor:corChao });
+}
+
+function criarParedes({ x, z, largura, fundo, frenteDeRede }, altura) {
+  const material = { transparent:true, opacity:0.22, depthWrite:false };
+  const e = ESPESSURA_PAREDE;
+  const paredes = [
+    criarCaixa({ x, z, largura, fundo:e, altura, cor:CORES.parede, opcoes:material }),
+    criarCaixa({ x, z, largura:e, fundo, altura, cor:CORES.parede, opcoes:material }),
+    criarCaixa({ x:x + largura - e, z, largura:e, fundo, altura, cor:CORES.parede, opcoes:material })
+  ];
+  if (frenteDeRede) return paredes;
+  return [...paredes, criarCaixa({ x, z:z + fundo - e, largura, fundo:e, altura, cor:CORES.parede, opcoes:material })];
+}
+
+// ── Rede, estrutura e divisórias ───────────────────────────
+// Painel de rede quadrada entre dois pontos alinhados com x ou com z
+function criarPainelRede({ inicio, fim, y = 0, altura }) {
+  const aoLongoDeX = inicio.z === fim.z;
+  const comprimento = aoLongoDeX ? fim.x - inicio.x : fim.z - inicio.z;
+  const pontos = [];
+  for (let d = 0; d <= comprimento + 1e-6; d += ESPACAMENTO_REDE) {
+    const x = aoLongoDeX ? inicio.x + d : inicio.x;
+    const z = aoLongoDeX ? inicio.z : inicio.z + d;
+    pontos.push(new THREE.Vector3(x, y, z), new THREE.Vector3(x, y + altura, z));
+  }
+  for (let h = 0; h <= altura + 1e-6; h += ESPACAMENTO_REDE) {
+    pontos.push(new THREE.Vector3(inicio.x, y + h, inicio.z), new THREE.Vector3(fim.x, y + h, fim.z));
+  }
+  const geometria = new THREE.BufferGeometry().setFromPoints(pontos);
+  return new THREE.LineSegments(geometria, new THREE.LineBasicMaterial({ color:CORES.estrutura, transparent:true, opacity:0.75 }));
+}
+
+// Moldura de perfil metálico à volta de um vão (porta ou painel)
+function criarMoldura({ inicio, fim, y = 0, altura, cor = CORES.estrutura }) {
+  const aoLongoDeX = inicio.z === fim.z;
+  const p = PERFIL_ESTRUTURA;
+  const largura = aoLongoDeX ? fim.x - inicio.x : p;
+  const fundo = aoLongoDeX ? p : fim.z - inicio.z;
+  const xBase = aoLongoDeX ? inicio.x : inicio.x - p / 2;
+  const zBase = aoLongoDeX ? inicio.z - p / 2 : inicio.z;
+  const grupo = new THREE.Group();
+  grupo.add(
+    criarCaixa({ x:xBase, z:zBase, largura, fundo, altura:p, y, cor }),
+    criarCaixa({ x:xBase, z:zBase, largura, fundo, altura:p, y:y + altura - p, cor }),
+    criarCaixa({ x:inicio.x - p / 2, z:inicio.z - p / 2, largura:p, fundo:p, altura, y, cor }),
+    criarCaixa({ x:fim.x - p / 2, z:fim.z - p / 2, largura:p, fundo:p, altura, y, cor })
+  );
+  return grupo;
+}
+
+function criarFrenteDeRede() {
+  const { x1, x2, z } = FRENTE_POMBAL_NOVO;
+  const altura = ALTURAS.pombal;
+  const grupo = new THREE.Group();
+  grupo.add(
+    criarPainelRede({ inicio:{ x:x1, z }, fim:{ x:x2, z }, altura }),
+    criarMoldura({ inicio:{ x:x1, z }, fim:{ x:x2, z }, altura }),
+    criarMoldura({ inicio:{ x:PORTA_REDE_FRENTE.x1, z }, fim:{ x:PORTA_REDE_FRENTE.x2, z }, altura:ALTURAS.porta })
+  );
+  return grupo;
+}
+
+function criarVoliere() {
+  const { x, z, largura, fundo, altura } = VOLIERE_POMBAL_NOVO;
+  const cantos = [ { x, z:z + fundo }, { x:x + largura, z:z + fundo } ];
+  const grupo = new THREE.Group();
+  grupo.add(
+    criarPainelRede({ inicio:cantos[0], fim:cantos[1], altura }),
+    criarPainelRede({ inicio:{ x, z }, fim:cantos[0], altura }),
+    criarPainelRede({ inicio:{ x:x + largura, z }, fim:cantos[1], altura }),
+    criarMoldura({ inicio:cantos[0], fim:cantos[1], altura, cor:CORES.voliere }),
+    criarMoldura({ inicio:{ x, z }, fim:cantos[0], altura, cor:CORES.voliere }),
+    criarMoldura({ inicio:{ x:x + largura, z }, fim:cantos[1], altura, cor:CORES.voliere }),
+    criarCaixa({ x, z, largura, fundo, altura:0.02, cor:'#C9CFD5' })
+  );
+  return grupo;
+}
+
+function criarGradeRipas() {
+  const g = GRADE_RIPAS;
+  const passo = g.larguraRipa + g.espaco;
+  const numeroRipas = Math.floor((g.fundo + g.espaco) / passo);
+  const grupo = new THREE.Group();
+  for (let i = 0; i < numeroRipas; i++) {
+    grupo.add(criarCaixa({ x:g.x, z:g.z + i * passo, largura:g.largura, fundo:g.larguraRipa, altura:g.espessura, y:g.alturaApoio, cor:CORES.ripas }));
+  }
+  return grupo;
+}
+
+function criarDivisoriaTransparente() {
+  const { z, paineis } = DIVISORIA_TRANSPARENTE;
+  const altura = ALTURAS.pombal;
+  const grupo = new THREE.Group();
+  paineis.forEach(({ x1, x2, porta }) => {
+    grupo.add(
+      criarCaixa({ x:x1, z:z - 0.01, largura:x2 - x1, fundo:0.02, altura, cor:CORES.vidro, opcoes:{ transparent:true, opacity:0.3, depthWrite:false } }),
+      criarMoldura({ inicio:{ x:x1, z }, fim:{ x:x2, z }, altura, cor:porta ? CORES.porta : CORES.estrutura })
+    );
+  });
+  return grupo;
+}
+
+function criarDivisoriaRede() {
+  const { x1, x2, z, porta } = DIVISORIA_REDE;
+  const altura = ALTURAS.pombal;
+  const grupo = new THREE.Group();
+  grupo.add(
+    criarPainelRede({ inicio:{ x:x1, z }, fim:{ x:x2, z }, altura }),
+    criarMoldura({ inicio:{ x:x1, z }, fim:{ x:x2, z }, altura }),
+    criarMoldura({ inicio:{ x:porta.x1, z:z + 0.05 }, fim:{ x:porta.x2, z:z + 0.05 }, altura:ALTURAS.porta, cor:CORES.porta }),
+    // calha da porta de correr
+    criarCaixa({ x:x1, z:z + 0.03, largura:x2 - x1, fundo:0.04, altura:0.04, y:ALTURAS.porta + 0.02, cor:'#6B7480' })
+  );
+  return grupo;
+}
+
+function construirPombalNovo() {
+  cena.add(criarFrenteDeRede(), criarVoliere(), criarGradeRipas(), criarDivisoriaTransparente(), criarDivisoriaRede());
+  grupoNomes.add(
+    criarNome('Voliére', VOLIERE_POMBAL_NOVO.x + VOLIERE_POMBAL_NOVO.largura / 2, VOLIERE_POMBAL_NOVO.altura + 0.25, VOLIERE_POMBAL_NOVO.z + VOLIERE_POMBAL_NOVO.fundo / 2),
+    criarNome('Porta de rede', (PORTA_REDE_FRENTE.x1 + PORTA_REDE_FRENTE.x2) / 2, ALTURAS.porta + 0.2, FRENTE_POMBAL_NOVO.z),
+    criarNome('Grade de ripas', 1, 0.4, 3.5),
+    criarNome('Portas transparentes', 1, ALTURAS.pombal + 0.15, DIVISORIA_TRANSPARENTE.z),
+    criarNome('Rede com porta de correr', 1, ALTURAS.pombal + 0.15, DIVISORIA_REDE.z)
+  );
+}
+
+// Gaiola de rede da entrada + tábua de aterragem à frente
+function criarEntrada({ centroX, zParede, largura, fundo, altura }) {
+  const grupo = new THREE.Group();
+  const fundoGaiola = fundo - PROFUNDIDADE_TABUA_ATERRAGEM;
+  const x = centroX - largura / 2;
+  const y = ALTURA_ENTRADA_AO_CHAO;
+  const geometria = new THREE.BoxGeometry(largura, altura, fundoGaiola);
+  const arestas = new THREE.LineSegments(new THREE.EdgesGeometry(geometria), new THREE.LineBasicMaterial({ color:CORES.rede }));
+  arestas.position.set(centroX, y + altura / 2, zParede + fundoGaiola / 2);
+  const rede = criarCaixa({ x, z:zParede, largura, fundo:fundoGaiola, altura, y, cor:CORES.rede, opcoes:{ transparent:true, opacity:0.18, depthWrite:false } });
+  const tabua = criarCaixa({ x, z:zParede + fundoGaiola, largura, fundo:PROFUNDIDADE_TABUA_ATERRAGEM, altura:ESPESSURA_TABUA_ATERRAGEM, y, cor:'#E8ECEF' });
+  grupo.add(arestas, rede, tabua);
+  return grupo;
+}
+
+// O pombal fica num piso elevado: a escada sobe 1,5 m desde o pátio
+const ALTURA_PISO_POMBAL = 1.5;
+const ALTURA_MAXIMA_DEGRAU = 0.19;
+
+function criarEscada() {
+  const numeroDegraus = Math.ceil(ALTURA_PISO_POMBAL / ALTURA_MAXIMA_DEGRAU);
+  const alturaDegrau = ALTURA_PISO_POMBAL / numeroDegraus;
+  const inicioX = 2.6, larguraEscada = 2.6, fundoEscada = 0.5, z = 1.45;
+  const degraus = new THREE.Group();
+  const passo = larguraEscada / numeroDegraus;
+  for (let i = 0; i < numeroDegraus; i++) {
+    const altura = (i + 1) * alturaDegrau;
+    degraus.add(criarCaixa({ x:inicioX + i * passo, z, largura:passo, fundo:fundoEscada, altura, y:-ALTURA_PISO_POMBAL, cor:'#8E9AA8' }));
+  }
+  return degraus;
+}
+
+// Pátio por baixo e volume do piso elevado (só para mostrar a altura)
+function criarPatioEBase() {
+  const grupo = new THREE.Group();
+  const MARGEM_PATIO = 1.5;
+  grupo.add(criarCaixa({ x:-MARGEM_PATIO, z:-MARGEM_PATIO, largura:6.5 + 2 * MARGEM_PATIO, fundo:5.5 + 2 * MARGEM_PATIO,
+    altura:0.02, y:-ALTURA_PISO_POMBAL - 0.02, cor:'#9FA7A0' }));
+  ESPACOS.forEach(espaco => {
+    grupo.add(criarCaixa({ ...espaco, altura:ALTURA_PISO_POMBAL - 0.04, y:-ALTURA_PISO_POMBAL,
+      cor:'#AEB6BF', opcoes:{ transparent:true, opacity:0.15, depthWrite:false } }));
+  });
+  grupo.add(criarNome('Pátio', -0.6, -ALTURA_PISO_POMBAL + 0.3, 5.8));
+  return grupo;
+}
+
+function criarPorta({ x, z, eixo, comprimento }) {
+  const espessura = 0.12;
+  const largura = eixo === 'x' ? comprimento : espessura;
+  const fundo = eixo === 'x' ? espessura : comprimento;
+  return criarCaixa({ x:x - (eixo === 'z' ? espessura / 2 : 0), z:z - (eixo === 'x' ? espessura / 2 : 0), largura, fundo, altura:ALTURAS.porta, cor:CORES.porta });
+}
+
+function criarNome(texto, x, y, z) {
+  const tela = document.createElement('canvas');
+  const contexto = tela.getContext('2d');
+  const tamanhoLetra = 56;
+  contexto.font = `600 ${tamanhoLetra}px 'Bricolage Grotesque', system-ui, sans-serif`;
+  const larguraTexto = contexto.measureText(texto).width;
+  tela.width = larguraTexto + 40; tela.height = tamanhoLetra + 34;
+  contexto.font = `600 ${tamanhoLetra}px 'Bricolage Grotesque', system-ui, sans-serif`;
+  contexto.fillStyle = 'rgba(28,36,48,0.85)';
+  contexto.beginPath();
+  if (contexto.roundRect) contexto.roundRect(0, 0, tela.width, tela.height, 20); else contexto.rect(0, 0, tela.width, tela.height);
+  contexto.fill();
+  contexto.fillStyle = '#fff'; contexto.textBaseline = 'middle';
+  contexto.fillText(texto, 20, tela.height / 2 + 2);
+  const etiqueta = new THREE.Sprite(new THREE.SpriteMaterial({ map:new THREE.CanvasTexture(tela), depthTest:false }));
+  const escala = 0.0045;
+  etiqueta.scale.set(tela.width * escala, tela.height * escala, 1);
+  etiqueta.position.set(x, y, z);
+  etiqueta.renderOrder = 10;
+  return etiqueta;
+}
+
+// Xadrez encostado a uma parede lateral: tábuas horizontais (prateleiras) e verticais (divisórias)
+function criarGrelhaXadrez({ x, z, largura, fundo, grelha }) {
+  const grupo = new THREE.Group();
+  const alturaCasa = grelha.altura / grelha.linhas;
+  const larguraCasa = fundo / grelha.colunas;
+  for (let linha = 0; linha <= grelha.linhas; linha++) {
+    grupo.add(criarCaixa({ x, z, largura, fundo, altura:ESPESSURA_TABUA, y:grelha.base + linha * alturaCasa, cor:CORES.xadrez }));
+  }
+  for (let coluna = 0; coluna <= grelha.colunas; coluna++) {
+    const zTabua = Math.min(Math.max(z + coluna * larguraCasa - ESPESSURA_TABUA / 2, z), z + fundo - ESPESSURA_TABUA);
+    grupo.add(criarCaixa({ x, z:zTabua, largura, fundo:ESPESSURA_TABUA, altura:grelha.altura, y:grelha.base, cor:CORES.xadrez }));
+  }
+  return grupo;
+}
+
+// Luminária estanque de 120 cm com 2 tubos T8, centrada no ponto de luz e alinhada com ele
+const LUMINARIA = { comprimento:1.2, largura:0.1, altura:0.07, raioTubo:0.013 };
+
+function criarLuz({ x1, z1, x2, z2 }) {
+  const { comprimento, largura, altura, raioTubo } = LUMINARIA;
+  const grupo = new THREE.Group();
+  const corpo = new THREE.Mesh(new THREE.BoxGeometry(comprimento, altura * 0.45, largura), criarMaterial('#D7DCE1'));
+  corpo.position.y = altura * 0.27;
+  const difusor = new THREE.Mesh(new THREE.BoxGeometry(comprimento - 0.04, altura * 0.55, largura - 0.01),
+    criarMaterial('#FFFFFF', { transparent:true, opacity:0.45, depthWrite:false }));
+  difusor.position.y = -altura * 0.2;
+  grupo.add(corpo, difusor);
+  [-1, 1].forEach(lado => {
+    const tubo = new THREE.Mesh(new THREE.CylinderGeometry(raioTubo, raioTubo, comprimento - 0.08, 12), new THREE.MeshBasicMaterial({ color:CORES.luz }));
+    tubo.rotation.z = Math.PI / 2;
+    tubo.position.set(0, -altura * 0.2, lado * largura * 0.22);
+    grupo.add(tubo);
+    const tampa = new THREE.Mesh(new THREE.BoxGeometry(0.03, altura, largura + 0.01), criarMaterial('#BFC5CC'));
+    tampa.position.set(lado * (comprimento / 2 - 0.015), 0, 0);
+    grupo.add(tampa);
+  });
+  grupo.position.set((x1 + x2) / 2, ALTURAS.pombal - altura / 2 - 0.01, (z1 + z2) / 2);
+  grupo.rotation.y = -Math.atan2(z2 - z1, x2 - x1);
+  return grupo;
+}
+
+function criarExaustor({ montagem, x, z }) {
+  const raio = DIAMETRO_EXAUSTOR / 2;
+  const grupo = new THREE.Group();
+  const moldura = new THREE.Mesh(new THREE.CylinderGeometry(raio * 1.6, raio * 1.6, 0.02, 24), criarMaterial('#9AA4AF'));
+  const ventoinha = new THREE.Mesh(new THREE.CylinderGeometry(raio, raio, 0.05, 24), criarMaterial(CORES.exaustor));
+  grupo.add(moldura, ventoinha);
+  if (montagem === 'teto') {
+    grupo.position.set(x, ALTURAS.pombal - 0.02, z);
+  } else {
+    grupo.rotation.z = Math.PI / 2;
+    grupo.position.set(x, ALTURA_EXAUSTOR_PAREDE, z);
+  }
+  return grupo;
+}
+
+const ALTURA_SENSOR = 1.5;
+const DIAMETRO_SENSOR = 0.06;
+
+// Disco branco pendurado do teto por um fio, a meio do pombal
+function criarSensor({ x, z }) {
+  const raio = DIAMETRO_SENSOR / 2;
+  const grupo = new THREE.Group();
+  const disco = new THREE.Mesh(new THREE.CylinderGeometry(raio, raio, 0.02, 24), criarMaterial(CORES.sensor));
+  disco.position.set(x, ALTURA_SENSOR, z);
+  const pontosFio = [new THREE.Vector3(x, ALTURA_SENSOR, z), new THREE.Vector3(x, ALTURAS.pombal, z)];
+  const fio = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pontosFio), new THREE.LineBasicMaterial({ color:'#7A8590' }));
+  grupo.add(disco, fio);
+  return grupo;
+}
+
+const RAIO_LAMPADA = 0.06;
+
+function criarLampada({ x, z }) {
+  const lampada = new THREE.Mesh(new THREE.SphereGeometry(RAIO_LAMPADA, 20, 14), new THREE.MeshBasicMaterial({ color:CORES.lampada }));
+  lampada.position.set(x, ALTURAS.pombal - RAIO_LAMPADA - 0.02, z);
+  return lampada;
+}
+
+const CRIADORES_EQUIPAMENTO = { luz:criarLuz, exaustor:criarExaustor, sensor:criarSensor, lampada:criarLampada };
+
+function posicaoNomeEquipamento(equipamento) {
+  if (equipamento.tipo === 'lampada') return [equipamento.x, ALTURAS.pombal + 0.15, equipamento.z];
+  if (equipamento.tipo === 'sensor') return [equipamento.x, ALTURA_SENSOR + 0.2, equipamento.z];
+  if (equipamento.tipo === 'luz') {
+    return [(equipamento.x1 + equipamento.x2) / 2, ALTURAS.pombal + 0.15, (equipamento.z1 + equipamento.z2) / 2];
+  }
+  const alturaBase = equipamento.montagem === 'teto' ? ALTURAS.pombal : ALTURA_EXAUSTOR_PAREDE;
+  return [equipamento.x, alturaBase + 0.2, equipamento.z];
+}
+
+// Construída em coordenadas locais (X ao longo da parede, Z a sair da parede) e depois rodada
+function criarPatilha({ x, z, vira }) {
+  const grupo = new THREE.Group();
+  const material = criarMaterial(CORES.xadrez);
+  const espessura = 0.015;
+  const coluna = new THREE.Mesh(new THREE.BoxGeometry(PATILHA.larguraColuna, PATILHA.alturaColuna, 0.02), material);
+  coluna.position.set(0, PATILHA.base + PATILHA.alturaColuna / 2, 0.01);
+  grupo.add(coluna);
+  const intervalo = PATILHA.alturaColuna / PATILHA.patilhasPorColuna;
+  const ANGULO_ASA = 0.6;
+  for (let i = 0; i < PATILHA.patilhasPorColuna; i++) {
+    const y = PATILHA.base + (i + 0.6) * intervalo;
+    const topo = new THREE.Mesh(new THREE.BoxGeometry(0.07, espessura, PATILHA.saliencia), material);
+    topo.position.set(0, y, PATILHA.saliencia / 2 + 0.02);
+    grupo.add(topo);
+    [-1, 1].forEach(lado => {
+      const asa = new THREE.Mesh(new THREE.BoxGeometry(0.09, espessura, PATILHA.saliencia), material);
+      asa.position.set(lado * 0.07, y - 0.025, PATILHA.saliencia / 2 + 0.02);
+      asa.rotation.z = -lado * ANGULO_ASA;
+      grupo.add(asa);
+    });
+  }
+  grupo.rotation.y = ROTACAO_POR_DIRECAO[vira];
+  grupo.position.set(x, 0, z);
+  return grupo;
+}
+
+// ── Cabos e caixa de interruptores ─────────────────────────
+function criarSegmentoCabo(inicio, fim, cor) {
+  const largura = Math.max(Math.abs(fim.x - inicio.x), ESPESSURA_CABO);
+  const altura = Math.max(Math.abs(fim.y - inicio.y), ESPESSURA_CABO);
+  const fundo = Math.max(Math.abs(fim.z - inicio.z), ESPESSURA_CABO);
+  const segmento = new THREE.Mesh(new THREE.BoxGeometry(largura, altura, fundo), new THREE.MeshBasicMaterial({ color:cor }));
+  segmento.position.set((inicio.x + fim.x) / 2, (inicio.y + fim.y) / 2, (inicio.z + fim.z) / 2);
+  return segmento;
+}
+
+// Percurso em ângulo reto: primeiro ao longo de x, depois de z, sempre à altura dos cabos
+function criarPercurso(origem, destino, cor) {
+  const canto = { x:destino.x, y:ALTURA_CABOS, z:origem.z };
+  const fim = { x:destino.x, y:ALTURA_CABOS, z:destino.z };
+  return [criarSegmentoCabo(origem, canto, cor), criarSegmentoCabo(canto, fim, cor)];
+}
+
+function construirInstalacaoEletrica() {
+  const c = CAIXA_INTERRUPTORES;
+  grupoEletrico.add(criarCaixa({ ...c, cor:CORES.caixa }));
+  grupoNomes.add(criarNome('Interruptores L2–L5', c.x + c.largura / 2, c.y + c.altura + 0.2, c.z));
+  const topoCaixa = { x:c.x + c.largura / 2, y:c.y + c.altura, z:c.z + c.fundo / 2 };
+  const saidaTeto = { ...topoCaixa, y:ALTURA_CABOS };
+  CIRCUITOS.forEach(circuito => {
+    grupoEletrico.add(criarSegmentoCabo(topoCaixa, saidaTeto, circuito.cor));
+    let origem = saidaTeto;
+    circuito.pontos.forEach(ponto => {
+      grupoEletrico.add(...criarPercurso(origem, ponto, circuito.cor));
+      origem = { x:ponto.x, y:ALTURA_CABOS, z:ponto.z };
+    });
+  });
+}
+
+// ── Esquema unifilar (desenhado a partir dos mesmos dados) ──
+const NS_SVG = 'http://www.w3.org/2000/svg';
+const ALTURA_LINHA_ESQUEMA = 40;
+
+function criarElementoSvg(tipo, atributos, texto) {
+  const elemento = document.createElementNS(NS_SVG, tipo);
+  Object.entries(atributos)
+    .filter(([, valor]) => valor !== undefined)
+    .forEach(([nome, valor]) => elemento.setAttribute(nome, valor));
+  if (texto) elemento.textContent = texto;
+  return elemento;
+}
+
+function desenharLinhaComando(grupo, { y, nome, destino, cor, xInicio, larguraInterruptor }) {
+  grupo.append(
+    criarElementoSvg('path', { class:'linha-svg', d:`M${xInicio - 18} ${y} H${xInicio}` }),
+    criarElementoSvg('rect', { x:xInicio, y:y - 14, width:larguraInterruptor, height:28, rx:7, fill:cor || 'var(--painel)', stroke:'var(--linha)' }),
+    criarElementoSvg('text', { class:'texto-svg', x:xInicio + 10, y:y + 5, style:cor ? 'fill:#0B1220' : undefined }, nome),
+    criarElementoSvg('path', { class:'linha-svg', d:`M${xInicio + larguraInterruptor} ${y} H${xInicio + larguraInterruptor + 24}` }),
+    criarElementoSvg('text', { class:'texto2-svg', x:xInicio + larguraInterruptor + 32, y:y + 4 }, destino)
+  );
+}
+
+function desenharEsquema() {
+  const grupoCircuitos = document.getElementById('esquema-circuitos');
+  CIRCUITOS.forEach((circuito, indice) => desenharLinhaComando(grupoCircuitos, {
+    y:338 + indice * ALTURA_LINHA_ESQUEMA, nome:`BASICR4 · ${circuito.nome}`, destino:circuito.destino,
+    cor:circuito.cor, xInicio:58, larguraInterruptor:150
+  }));
+  const grupoRemotos = document.getElementById('esquema-remotos');
+  COMANDOS_REMOTOS.forEach((comando, indice) => desenharLinhaComando(grupoRemotos, {
+    y:612 + indice * ALTURA_LINHA_ESQUEMA, nome:comando.nome, destino:comando.destino,
+    xInicio:44, larguraInterruptor:110
+  }));
+}
+
+function construirEquipamentos() {
+  EQUIPAMENTOS.forEach(equipamento => {
+    cena.add(CRIADORES_EQUIPAMENTO[equipamento.tipo](equipamento));
+    grupoNomes.add(criarNome(equipamento.nome, ...posicaoNomeEquipamento(equipamento)));
+  });
+}
+
+function criarPeca(peca) {
+  if (peca.grelha) return criarGrelhaXadrez(peca);
+  return criarCaixa({ ...peca, altura:alturaDoTipo(peca.tipo), cor:CORES[peca.tipo] });
+}
+
+function alturaDoTipo(tipo) {
+  return ALTURAS[tipo] || ALTURAS.pombal;
+}
+
+function construirModelo() {
+  ESPACOS.forEach(espaco => {
+    cena.add(criarChao(espaco));
+    grupoParedes.add(...criarParedes(espaco, alturaDoTipo(espaco.tipo)));
+    grupoNomes.add(criarNome(espaco.nome, espaco.x + espaco.largura / 2, alturaDoTipo(espaco.tipo) + 0.35, espaco.z + espaco.fundo / 2));
+  });
+  ENTRADAS.forEach(entrada => {
+    cena.add(criarEntrada(entrada));
+    grupoNomes.add(criarNome(entrada.nome, entrada.centroX, ALTURA_ENTRADA_AO_CHAO + entrada.altura + 0.25, entrada.zParede + entrada.fundo / 2));
+  });
+  MOBILIARIO.forEach(peca => cena.add(criarPeca(peca)));
+  PORTAS.forEach(porta => cena.add(criarPorta(porta)));
+  cena.add(criarEscada());
+  cena.add(criarPatioEBase());
+  construirEquipamentos();
+  PATILHAS.forEach(patilha => cena.add(criarPatilha(patilha)));
+  construirInstalacaoEletrica();
+  construirPombalNovo();
+}
+
+// ── Tabela de áreas e volumes ───────────────────────────────
+function formatar(numero) {
+  return numero.toFixed(CASAS_DECIMAIS).replace('.', ',');
+}
+
+function linhaTabela(nome, area, altura) {
+  return `<tr><td>${nome}</td><td>${formatar(area)} m²</td><td>${formatar(area * altura)} m³</td></tr>`;
+}
+
+function preencherTabela() {
+  const linhasEspacos = ESPACOS
+    .filter(e => e.tipo !== 'armarios')
+    .map(e => linhaTabela(e.nome, e.largura * e.fundo, alturaDoTipo(e.tipo)));
+  document.getElementById('tabela').innerHTML =
+    '<tr><th>Espaço</th><th>Área do chão</th><th>Volume de ar</th></tr>' + linhasEspacos.join('');
+  document.getElementById('legenda').innerHTML =
+    LEGENDA.map(([chave, texto]) => `<li><i style="background:${CORES[chave]}"></i>${texto}</li>`).join('');
+  document.getElementById('nota-alturas').textContent =
+    `Pé-direito provisório dos pombais: ${formatar(ALTURAS.pombal)} m. ` +
+    `Pombal novo: frente de rede com porta de 1 m, voliére de rede de 1 × 0,6 m por fora, grade de ripas de cimento (7 cm, espaço de 3 cm) e portas transparentes. ` +
+    `Voliére de entrada do pombal do meio: 60 × 56 × 60 cm, a ${formatar(ALTURA_ENTRADA_AO_CHAO)} m do chão. ` +
+    'O volume de ar muda quando tivermos o pé-direito real. Ninhos e prateleiras ocupam parte do volume. ' +
+    `Xadrez do pombal 1: ${GRELHA_XADREZ_POMBAL_1.colunas} × ${GRELHA_XADREZ_POMBAL_1.linhas} = ` +
+    `${GRELHA_XADREZ_POMBAL_1.colunas * GRELHA_XADREZ_POMBAL_1.linhas} casas em cada parede lateral.`;
+}
+
+// ── Botões ──────────────────────────────────────────────────
+function ligarBotao(id, aoAlternar) {
+  const botao = document.getElementById(id);
+  botao.addEventListener('click', () => {
+    const ativo = botao.getAttribute('aria-pressed') !== 'true';
+    botao.setAttribute('aria-pressed', String(ativo));
+    aoAlternar(ativo);
+  });
+}
+
+ligarBotao('botao-paredes', ativo => { grupoParedes.visible = ativo; });
+ligarBotao('botao-eletrico', ativo => { grupoEletrico.visible = ativo; });
+
+const painelEsquema = document.getElementById('esquema');
+document.getElementById('botao-esquema').addEventListener('click', () => {
+  painelEsquema.hidden = false;
+  document.getElementById('fechar-esquema').focus();
+});
+document.getElementById('fechar-esquema').addEventListener('click', () => {
+  painelEsquema.hidden = true;
+  document.getElementById('botao-esquema').focus();
+});
+ligarBotao('botao-legendas', ativo => {
+  grupoNomes.visible = ativo;
+  document.getElementById('folha').hidden = !ativo;
+});
+
+// ── Vista 2D: planta vista de cima, sem perspetiva ─────────
+const AREA_PLANTA = { largura:9.5, fundo:8.5 };
+const camaraPlanta = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
+camaraPlanta.position.set(CENTRO.x, 30, CENTRO.z + 0.5);
+camaraPlanta.up.set(0, 0, -1);
+camaraPlanta.lookAt(CENTRO.x, 0, CENTRO.z + 0.5);
+const controlosPlanta = new THREE.OrbitControls(camaraPlanta, renderizador.domElement);
+controlosPlanta.target.set(CENTRO.x, 0, CENTRO.z + 0.5);
+controlosPlanta.enableRotate = false;
+controlosPlanta.screenSpacePanning = true;
+controlosPlanta.enabled = false;
+let vistaPlanta = false;
+
+function ajustarCamaraPlanta(proporcao) {
+  const metadeAltura = Math.max(AREA_PLANTA.fundo, AREA_PLANTA.largura / proporcao) / 2;
+  camaraPlanta.left = -metadeAltura * proporcao;
+  camaraPlanta.right = metadeAltura * proporcao;
+  camaraPlanta.top = metadeAltura;
+  camaraPlanta.bottom = -metadeAltura;
+  camaraPlanta.updateProjectionMatrix();
+}
+
+ligarBotao('botao-planta', ativo => {
+  vistaPlanta = ativo;
+  controlos.enabled = !ativo;
+  controlosPlanta.enabled = ativo;
+});
+
+// ── Arranque ────────────────────────────────────────────────
+function ajustarTamanho() {
+  const { clientWidth:largura, clientHeight:altura } = contentor;
+  renderizador.setSize(largura, altura);
+  camara.aspect = largura / altura;
+  camara.updateProjectionMatrix();
+  ajustarCamaraPlanta(largura / altura);
+}
+
+function animar() {
+  const controlosAtivos = vistaPlanta ? controlosPlanta : controlos;
+  controlosAtivos.update();
+  renderizador.render(cena, vistaPlanta ? camaraPlanta : camara);
+  requestAnimationFrame(animar);
+}
+
+construirModelo();
+preencherTabela();
+desenharEsquema();
+ajustarTamanho();
+window.addEventListener('resize', ajustarTamanho);
+animar();
+</script>
+</body>
+</html>
